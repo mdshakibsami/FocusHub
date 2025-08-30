@@ -1,25 +1,50 @@
 import React, { useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import loginImage from "../assets/auth/login.svg";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [customError, setCustomError] = useState("");
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
+  if (user) {
+    // return navigate("/")
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     signIn(email, password)
       .then((res) => {
-        console.log("Login ", res);
-        // an alert
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          background:"#23272f",
+          title: "Login successful!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
         navigate("/");
       })
       .catch((err) => {
-        console.log("Error ", err);
-        // an alert
+        const error = new String(err);
+        if (error.includes("auth/invalid-credential")) {
+          setCustomError("Email or Password is wrong");
+        } else {
+          setCustomError("Something is wrong");
+        }
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: customError,
+          showConfirmButton: false,
+          timer: 2000,
+        });
       });
   };
 
@@ -66,6 +91,12 @@ const Login = () => {
               Login
             </button>
           </form>
+          <div className="my-2 flex  gap-2 justify-end">
+            <h1> Don't have an account ?</h1>
+            <Link className="text-blue-500" to={"/register"}>
+              Register
+            </Link>
+          </div>
         </div>
       </div>
     </div>

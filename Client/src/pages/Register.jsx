@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import registerImage from "../assets/auth/register.svg";
 
 const Register = () => {
@@ -8,7 +8,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { updateUser, createUser } = useAuth();
+  const { updateUser, user, createUser } = useAuth();
+
+  if (user) {
+    // return navigate("/");
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,6 +82,12 @@ const Register = () => {
               Register
             </button>
           </form>
+          <div className="my-2 flex  gap-2 justify-end">
+            <h1>Already have an account ?</h1>
+            <Link className="text-blue-500" to={"/login"}>
+              Login
+            </Link>
+          </div>
         </div>
       </div>
     </div>
