@@ -4,6 +4,10 @@ import NotFound from "../components/not-found/NotFound";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import DashboardHome from "../components/dashboard/Home/DashboardHome";
+import ClassScheduler from "../components/dashboard/ClassScheduler/ClassScheduler";
+import BudgetTracker from "../components/dashboard/BudgetTracker/BudgetTracker";
+import EachClass from "../components/dashboard/ClassScheduler/EachClass";
 
 export const router = createBrowserRouter([
   {
@@ -11,8 +15,27 @@ export const router = createBrowserRouter([
     Component: RootLayout,
     children: [
       {
-        index: true,
         Component: Home,
+        children: [
+          {
+            path: "/",
+            Component: DashboardHome,
+          },
+          {
+            path: "/class-scheduler",
+            Component: ClassScheduler,
+            children: [
+              {
+                path: "/class-scheduler/:day",
+                Component: EachClass,
+              },
+            ],
+          },
+          {
+            path: "/budget-tracker",
+            Component: BudgetTracker,
+          },
+        ],
       },
       {
         path: "login",
@@ -24,64 +47,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/dashboard",
-  //   element: (
-  //     <PrivateRouter>
-  //       <Dashboard></Dashboard>
-  //     </PrivateRouter>
-  //   ),
-  //   children: [
-  //     {
-  //       index: true,
-  //       Component: MyProfile,
-  //     },
-  //     {
-  //       path: "/dashboard/comments/:id",
-  //       Component: Comments,
-  //     },
-  //     {
-  //       path: "/dashboard/add-post",
-  //       Component: AddPost,
-  //     },
-  //     {
-  //       path: "/dashboard/my-posts",
-  //       Component: MyPosts,
-  //     },
-  //     {
-  //       path: "/dashboard/admin-profile",
-  //       element: (
-  //         <AdminRoute>
-  //           <AdminProfile></AdminProfile>
-  //         </AdminRoute>
-  //       ),
-  //     },
-  //     {
-  //       path: "/dashboard/manage-users",
-  //       element: (
-  //         <AdminRoute>
-  //           <ManageUser></ManageUser>
-  //         </AdminRoute>
-  //       ),
-  //     },
-  //     {
-  //       path: "/dashboard/reported-comments",
-  //       element: (
-  //         <AdminRoute>
-  //           <ReportedComments></ReportedComments>
-  //         </AdminRoute>
-  //       ),
-  //     },
-  //     {
-  //       path: "/dashboard/announcements",
-  //       element: (
-  //         <AdminRoute>
-  //           <MakeAnnouncements></MakeAnnouncements>
-  //         </AdminRoute>
-  //       ),
-  //     },
-  //   ],
-  // },
   {
     path: "*",
     Component: NotFound,

@@ -1,14 +1,8 @@
 import React, { useState } from "react";
 import Navbar from "../components/navbar/Navbar";
-import Footer from "../components/footer/Footer";
-import {
-  FiHome,
-  FiUser,
-  FiSettings,
-  FiLogOut,
-  FiMenu,
-  FiX,
-} from "react-icons/fi";
+import { FiHome, FiUser, FiSettings, FiMenu, FiX } from "react-icons/fi";
+import { FaChalkboardTeacher, FaMoneyCheckAlt } from "react-icons/fa";
+import { NavLink, Outlet } from "react-router";
 
 const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -50,48 +44,38 @@ const Home = () => {
           <nav className="flex-1 py-6">
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-6 py-3 rounded-lg hover:bg-[#2C394B] transition-colors"
+                <NavLink
+                  to={"/class-scheduler"}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-6 py-3 rounded-lg transition-colors hover:bg-[#2C394B]${
+                      isActive ? " bg-[#e64524]" : ""
+                    }`
+                  }
                 >
-                  <FiHome className="text-xl" />
-                  Home
-                </a>
+                  <FaChalkboardTeacher className="text-xl" />
+                  Class Scheduler
+                </NavLink>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-6 py-3 rounded-lg hover:bg-[#2C394B] transition-colors"
+                <NavLink
+                  to={"/budget-tracker"}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-6 py-3 rounded-lg transition-colors hover:bg-[#2C394B]${
+                      isActive ? " bg-[#e64524]" : ""
+                    }`
+                  }
                 >
-                  <FiUser className="text-xl" />
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-6 py-3 rounded-lg hover:bg-[#2C394B] transition-colors"
-                >
-                  <FiSettings className="text-xl" />
-                  Settings
-                </a>
+                  <FaMoneyCheckAlt className="text-xl" />
+                  Budget Tracker
+                </NavLink>
               </li>
             </ul>
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 transition-all duration-300">
-          <div className="flex flex-col items-center justify-center min-h-[60vh]">
-            <h1 className="text-3xl font-bold mb-4 text-[#FF4C29]">
-              Welcome to FocusHub Dashboard
-            </h1>
-            <p className="text-lg text-gray-300 mb-8 text-center max-w-xl">
-              This is your dashboard. Use the sidebar to navigate between
-              different sections. The layout is fully responsive and adapts to
-              all device sizes.
-            </p>
-          </div>
+        <main className="flex-1">
+          <Outlet></Outlet>
         </main>
       </div>
     </div>

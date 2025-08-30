@@ -17,12 +17,12 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     signIn(email, password)
-      .then((res) => {
+      .then(() => {
         Swal.fire({
           toast: true,
           position: "top-end",
           icon: "success",
-          background:"#23272f",
+          background: "#23272f",
           title: "Login successful!",
           showConfirmButton: false,
           timer: 2000,

@@ -37,37 +37,39 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-[#e64524] shadow-sm pr-4 sm:px-6">
+    <div className="py-2 bg-[#e64524] shadow-sm pr-4 sm:px-6">
       <div className="navbar-start">
         <a className="text-2xl hidden md:block font-bold">FocusHub</a>
       </div>
 
-      <div className="navbar-end items-center space-x-5">
-        <div>
-          <h1 className="font-bold">{user?.displayName}</h1>
+      {user && (
+        <div className="navbar-end items-center space-x-5">
+          <div>
+            <h1 className="font-bold">{user?.displayName}</h1>
+          </div>
+          <div className="relative">
+            <button
+              className="avatar avatar-online focus:outline-none"
+              onClick={() => setShowLogout((prev) => !prev)}
+              aria-label="Profile"
+            >
+              <div className="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/profile/demo/gordon@192.webp" />
+              </div>
+            </button>
+            {showLogout && (
+              <div className="absolute right-0 mt-4 px-4 py-2 hover:bg-[#FF4C29]  transition-colors bg-[#23272F] rounded shadow-lg z-50">
+                <Link className="block text-white " onClick={handleLogOut}>
+                  <div className="flex gap-3 justify-center items-center">
+                    <FiLogOut className=" text-white text-xl" />
+                    <h1 className="font-bold"> Logout</h1>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="relative">
-          <button
-            className="avatar avatar-online focus:outline-none"
-            onClick={() => setShowLogout((prev) => !prev)}
-            aria-label="Profile"
-          >
-            <div className="w-10 rounded-full">
-              <img src="https://img.daisyui.com/images/profile/demo/gordon@192.webp" />
-            </div>
-          </button>
-          {showLogout && (
-            <div className="absolute right-0 mt-4 px-4 py-2 hover:bg-[#FF4C29]  transition-colors bg-[#23272F] rounded shadow-lg z-50">
-              <Link className="block text-white " onClick={handleLogOut}>
-                <div className="flex gap-3 justify-center items-center">
-                  <FiLogOut className=" text-white text-xl" />
-                  <h1 className="font-bold"> Logout</h1>
-                </div>
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 };
