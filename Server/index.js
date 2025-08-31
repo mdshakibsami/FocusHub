@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,12 +31,17 @@ async function run() {
     app.get("/", (_req, res) => {
       res.send("Cooking.....");
     });
+    // // Query to clear a database collection
+    // app.get("/deleteAll", async (_req, res) => {
+    //   await classCollection.deleteMany({});
+    //   res.json({success:true})
+    // });
     // ======================= Class =================================
-    app.post("/add-class", (req, res) => {
+    app.post("/add-class", async (req, res) => {
       try {
         const newClass = req.body;
-        classCollection.insertOne(newClass);
-        res.json({ success: true, status: 200 });
+        const result = await classCollection.insertOne(newClass);
+        res.send(result);
       } catch (error) {
         res.json({ success: false, error: error });
       }
@@ -46,6 +51,64 @@ async function run() {
       const day = req.params.day;
       const result = await classCollection.find({ day: day }).toArray();
       res.send(result);
+    });
+
+    app.put("/update-class/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const updatedClass = req.body;
+        const result = await classCollection.updateOne(
+          {
+            _id: new ObjectId(id),
+          },
+          { $set: updatedClass }
+        );
+        res.send(result);
+      } catch (error) {
+        res.json({ success: false, error, message: "Something is Wrong" });
+      }
+    });
+
+    app.patch("/update-class/completed/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const result = await classCollection.updateOne(
+          {
+            _id: new ObjectId(id),
+          },
+          { $set: { status: true } }
+        );
+        res.send(result);
+      } catch (error) {
+        res.json({ success: false, error, message: "Something is Wrong" });
+      }
+    });
+
+    app.patch("/update-class/incomplete/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const result = await classCollection.updateOne(
+          {
+            _id: new ObjectId(id),
+          },
+          { $set: { status: false } }
+        );
+        res.send(result);
+      } catch (error) {
+        res.json({ success: false, error, message: "Something is Wrong" });
+      }
+    });
+
+    app.delete("/classes/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const result = await classCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+        res.json({ success: result.deletedCount === 1, status: 200 });
+      } catch (error) {
+        res.json({ success: false, error, message: "Something is Wrong" });
+      }
     });
 
     // ===============================================================

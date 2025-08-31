@@ -5,9 +5,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../../utils/api";
+import {
+  MdCheckBoxOutlineBlank,
+  MdDeleteSweep,
+  MdLibraryAdd,
+} from "react-icons/md";
+import { FaRegCheckSquare } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
 
-async function addClass(classData) {
-  const res = await api.post("/add-class", classData);
+async function getClasses(day) {
+  const res = await api.get(`/classes/${day}`);
   return res.data;
 }
 
@@ -24,6 +31,7 @@ const EachClass = () => {
   const params = useParams();
   const selectedDay = params.day;
   const [classes, setClasses] = useState([]);
+  const [selectedClass, setSelectedClass] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const {
@@ -40,49 +48,160 @@ const EachClass = () => {
   };
 
   useEffect(() => {
-    async function getClasses(day) {
-      const res = await api.get(`/classes/${day}`);
-      setClasses(res.data);
-      console.log("hi", res.data);
-    }
-    getClasses(selectedDay);
-  }, [selectedDay,showModal]);
+    (async () => {
+      const newClass = await getClasses(selectedDay);
+      setClasses(newClass);
+    })();
+  }, [selectedDay, showModal]);
+  console.log(classes);
 
   const onSubmit = async (data) => {
-    console.log(data);
     data.day = selectedDay;
+    data.status = false;
     setShowModal(false);
-    const res = await addClass(data);
-    if (res.success) {
+    if (selectedClass?._id) {
+      const res = await api.put(`/update-class/${selectedClass._id}`, data);
+      if (res.data.modifiedCount) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Class is modified.",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        const newClass = await getClasses(selectedDay);
+        setClasses(newClass);
+        // reset();
+        return;
+      }
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Update Failed.",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } else {
+      setShowModal(false);
+      setSelectedClass(null);
+      const res = await api.post("/add-class", data);
+      if (res.data.insertedId) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Class added!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        const newClass = await getClasses(selectedDay);
+        setClasses(newClass);
+        // reset();
+        return;
+      }
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Sorry, Could not add class",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  };
+
+  const handleUpdate = (cls) => {
+    reset(cls);
+    setSelectedClass(cls);
+    setShowModal(true);
+  };
+
+  const handleComplete = async (id) => {
+    const result = await api.patch(`/update-class/completed/${id}`);
+    if (result.data.modifiedCount) {
+      const newClass = await getClasses(selectedDay);
+      setClasses(newClass);
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "success",
-        title: "Class added!",
+        title: "Marked the class as completed",
         showConfirmButton: false,
         timer: 2000,
       });
-      reset();
-      return;
+    } else {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Something went Wrong!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: "Failed",
-      title: "Something went Wrong!",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+  };
+  const handleIncomplete = async (id) => {
+    const result = await api.patch(`/update-class/incomplete/${id}`);
+
+    if (result.data.modifiedCount) {
+      const newClass = await getClasses(selectedDay);
+      setClasses(newClass);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Marked the class as incomplete",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } else {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Something went Wrong!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const res = await api.delete(`/classes/${id}`);
+    if (res.data.success) {
+      const newClass = await getClasses(selectedDay);
+      setClasses(newClass);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Successfully deleted the class. ",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } else {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Something went Wrong!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
   };
 
   return (
     <>
       <div className="flex justify-end ">
         <button
-          className="py-2 px-4 bg-[#e64524] rounded-lg my-4 hover:bg-[#2C394B]"
+          className="py-2 px-3 bg-green-500 rounded-lg my-4 hover:bg-[#2C394B] "
+          title="Add New Class"
           onClick={handleAddClass}
         >
-          Add Class
+          <MdLibraryAdd size={30} />
         </button>
       </div>
 
@@ -170,15 +289,15 @@ const EachClass = () => {
       )}
 
       {/* Show data in table */}
-      <table className="min-w-full bg-[#23272F] rounded-lg shadow-md mt-6">
+      <table className="min-w-full bg-[#23272F] rounded-lg shadow-md ">
         <thead>
           <tr>
-            <th className="py-2 px-4 text-left text-white">Subject</th>
-            <th className="py-2 px-4 text-left text-white">Instructor</th>
-            <th className="py-2 px-4 text-left text-white">Start Time</th>
-            <th className="py-2 px-4 text-left text-white">End Time</th>
-            <th className="py-2 px-4 text-left text-white">Notes</th>
-            <th className="py-2 px-4 text-left text-white">Action</th>
+            <th className="py-2 px-4 text-white text-center">Subject</th>
+            <th className="py-2 px-4 text-white text-center">Instructor</th>
+            <th className="py-2 px-4 text-white text-center">Start Time</th>
+            <th className="py-2 px-4 text-white text-center">End Time</th>
+            <th className="py-2 px-4 text-white text-center">Notes</th>
+            <th className="py-2 px-4 text-white text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -192,21 +311,62 @@ const EachClass = () => {
             classes.map((cls) => (
               <tr
                 key={cls._id}
-                className={`border-b border-gray-700 bg-[${cls.color}]`}
+                className={`border-b border-gray-700  bg-[${cls.color}]`}
               >
-                <td className="py-2 px-4 text-white">{cls.subject}</td>
-                <td className="py-2 px-4 text-white">{cls.instructor}</td>
-                <td className="py-2 px-4 text-white">{cls.startTime}</td>
-                <td className="py-2 px-4 text-white">{cls.endTime}</td>
-                <td className="py-2 px-4 text-white">{cls.notes || "-"}</td>
-                <td className="py-2 px-4 text-white">
+                <td className="py-2 px-4 text-center text-white">
+                  {cls.subject}
+                </td>
+                <td className="py-2 px-4 text-center text-white">
+                  {cls.instructor}
+                </td>
+                <td className="py-2 px-4 text-center text-white">
+                  {cls.startTime}
+                </td>
+                <td className="py-2 px-4 text-center text-white">
+                  {cls.endTime}
+                </td>
+                <td className="py-2 px-4 text-center text-white">
+                  {cls.notes || "-"}
+                </td>
+                <td className="py-2 px-4 text-center text-white">
                   {/* Example action buttons */}
-                  <button className="px-2 py-1 bg-blue-600 rounded text-white mr-2 hover:bg-blue-800 text-xs">
-                    Edit
-                  </button>
-                  <button className="px-2 py-1 bg-red-600 rounded text-white hover:bg-red-800 text-xs">
-                    Delete
-                  </button>
+                  <div className="flex justify-center gap-5">
+                    <button
+                      onClick={() => handleUpdate(cls, cls._id)}
+                      className="px-2 py-1 bg-blue-600 rounded text-white mr-2 hover:bg-blue-500 text-xs"
+                      title="Edit Class"
+                    >
+                      <AiFillEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(cls._id)}
+                      className="px-2 py-1 bg-red-600 rounded text-white hover:bg-red-800 text-xs"
+                      title="Delete Class"
+                    >
+                      <MdDeleteSweep size={20} />
+                    </button>
+                    {cls.status ? (
+                      <>
+                        <button
+                          onClick={() => handleIncomplete(cls._id)}
+                          className="px-2 py-1 bg-green-600 rounded text-white hover:bg-green-800 text-xs"
+                          title="Mark as incomplete"
+                        >
+                          <FaRegCheckSquare size={20} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleComplete(cls._id)}
+                          className="px-2 py-1 bg-green-600 rounded text-white hover:bg-green-800 text-xs"
+                          title="Mark as Complete"
+                        >
+                          <MdCheckBoxOutlineBlank size={20} />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))
