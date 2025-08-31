@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { NavLink, useParams } from "react-router";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,6 +32,15 @@ const EachClass = () => {
   const selectedDay = params.day;
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+  const daysOfWeek = [
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+  ];
 
   const [showModal, setShowModal] = useState(false);
   const {
@@ -195,6 +204,23 @@ const EachClass = () => {
 
   return (
     <>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-4 mx-auto">
+        {daysOfWeek.map((day) => (
+          <NavLink
+            key={day}
+            to={`/class-scheduler/${day.toLowerCase()}`}
+            className={({ isActive }) =>
+              `block px-4 py-2 rounded-lg text-center font-semibold transition-colors shadow-md ${
+                isActive
+                  ? "bg-[#e64524] text-white"
+                  : "bg-[#23272F] text-white hover:bg-[#2C394B]"
+              }`
+            }
+          >
+            {day}
+          </NavLink>
+        ))}
+      </div>
       <div className="flex justify-end ">
         <button
           className="py-2 px-3 bg-green-500 rounded-lg my-4 hover:bg-[#2C394B] "
@@ -311,7 +337,8 @@ const EachClass = () => {
             classes.map((cls) => (
               <tr
                 key={cls._id}
-                className={`border-b border-gray-700  bg-[${cls.color}]`}
+                className={`border-b border-gray-700`}
+                style={{ backgroundColor: cls.color }}
               >
                 <td className="py-2 px-4 text-center text-white">
                   {cls.subject}

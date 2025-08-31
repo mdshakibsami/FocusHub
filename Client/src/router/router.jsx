@@ -8,6 +8,7 @@ import DashboardHome from "../components/dashboard/Home/DashboardHome";
 import ClassScheduler from "../components/dashboard/ClassScheduler/ClassScheduler";
 import BudgetTracker from "../components/dashboard/BudgetTracker/BudgetTracker";
 import EachClass from "../components/dashboard/ClassScheduler/EachClass";
+import ClassOverview from "../components/dashboard/ClassScheduler/ClassOverview";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,14 @@ export const router = createBrowserRouter([
             path: "/class-scheduler",
             Component: ClassScheduler,
             children: [
+              {
+                index: true,
+                Component: ClassOverview,
+              },
+              {
+                path: "/class-scheduler/overview",
+                Component: ClassOverview,
+              },
               {
                 path: "/class-scheduler/:day",
                 Component: EachClass,
