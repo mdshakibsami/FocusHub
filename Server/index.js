@@ -53,6 +53,32 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/all-day-count", async (_req, res) => {
+      try {
+        const result = await classCollection
+          .aggregate([
+            {
+              $group: {
+                _id: "$day",
+                count: { $sum: 1 },
+              },
+            },
+          ])
+          .toArray();
+        res.json(result);
+      } catch (err) {
+        res.status(500).json({ error: "Server error" });
+      }
+    });
+
+    app.get("/completed", async (_req, res) => {
+      const sizeOfClasses = await classCollection.estimatedDocumentCount();
+      const sizeOfCompleted = await classCollection.countDocuments({
+        status: true,
+      });
+      res.json({ size:sizeOfClasses, completed:sizeOfCompleted });
+    });
+
     app.put("/update-class/:id", async (req, res) => {
       try {
         const { id } = req.params;
