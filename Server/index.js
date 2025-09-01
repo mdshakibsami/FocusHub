@@ -26,16 +26,106 @@ async function run() {
 
     // ======================== Collections ==========================
     const classCollection = client.db("FocusHub").collection("classes");
+    const transactionCollection = client
+      .db("FocusHub")
+      .collection("transactions");
 
     // ===============================================================
     app.get("/", (_req, res) => {
       res.send("Cooking.....");
     });
+
     // // Query to clear a database collection
     // app.get("/deleteAll", async (_req, res) => {
-    //   await classCollection.deleteMany({});
+    //   await transactionCollection.deleteMany({});
     //   res.json({success:true})
     // });
+
+    // ====================== Budget Tracker =========================
+    app.post("/add-transaction", async (req, res) => {
+      try {
+        const newClass = req.body;
+        const result = await transactionCollection.insertOne(newClass);
+        res.send(result);
+      } catch (error) {
+        res.json({ success: false, error: error });
+      }
+    });
+
+    app.get("/all-transactions", async (_req, res) => {
+      const result = await transactionCollection.find({}).toArray();
+      res.send(result);
+    });
+
+    // get the income count and expense count
+    app.get("/transaction-count", async (_req, res) => {
+      try {
+        const result = await transactionCollection
+          .aggregate([
+            {
+              $group: {
+                _id: "$type",
+                count: { $sum: 1 },
+              },
+            },
+          ])
+          .toArray();
+
+        res.json(result);
+      } catch (err) {
+        res.status(500).json({ error: "Server error" });
+      }
+    });
+
+    // get all income count
+    app.get("/all-income-count", async (_req, res) => {
+      try {
+        const result = await transactionCollection
+          .aggregate([
+            {
+              $group: {
+                _id: "$title",
+                count: { $sum: 1 },
+              },
+            },
+          ])
+          .toArray();
+        res.json(result);
+      } catch (err) {
+        res.status(500).json({ error: "Server error" });
+      }
+    });
+
+    app.put("/update-transaction/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const updatedClass = req.body;
+        console.log(id, updatedClass);
+        const result = await transactionCollection.updateOne(
+          {
+            _id: new ObjectId(id),
+          },
+          { $set: updatedClass }
+        );
+        res.send(result);
+      } catch (error) {
+        res.json({ success: false, error, message: "Something is Wrong" });
+      }
+    });
+
+    app.delete("/transaction/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
+        const result = await transactionCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+        res.json({ success: result.deletedCount === 1, status: 200 });
+      } catch (error) {
+        res.json({ success: false, error, message: "Something is Wrong" });
+      }
+    });
+    // ===============================================================
+
     // ======================= Class =================================
     app.post("/add-class", async (req, res) => {
       try {
@@ -76,7 +166,7 @@ async function run() {
       const sizeOfCompleted = await classCollection.countDocuments({
         status: true,
       });
-      res.json({ size:sizeOfClasses, completed:sizeOfCompleted });
+      res.json({ size: sizeOfClasses, completed: sizeOfCompleted });
     });
 
     app.put("/update-class/:id", async (req, res) => {
@@ -136,7 +226,6 @@ async function run() {
         res.json({ success: false, error, message: "Something is Wrong" });
       }
     });
-
     // ===============================================================
 
     // Send a ping to confirm a successful connection

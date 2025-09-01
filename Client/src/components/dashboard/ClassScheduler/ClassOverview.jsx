@@ -75,7 +75,7 @@ const ClassOverview = () => {
     <div className="flex flex-col  gap-8 p-4 ">
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full  ">
-        <div className="bg-[#23272f] shadow-lg rounded-xl p-6 flex flex-col items-center justify-center hover:scale-105 hover:bg-[#e64524] transition-all duration-200">
+        <div className="bg-[#23272f] shadow-lg rounded-xl p-6 flex flex-col items-center justify-center hover:scale-105 hover:bg-green-500 transition-all duration-200">
           <span className="text-3xl text-center font-bold text-white drop-shadow">
             Weekly Class Overview
           </span>
@@ -84,7 +84,7 @@ const ClassOverview = () => {
         {allCounts.map(({ _id, count }) => (
           <div
             key={_id}
-            className="bg-[#23272f] shadow-lg rounded-xl p-6 flex flex-col items-center justify-center hover:scale-105 hover:bg-[#e64524] transition-all duration-200"
+            className="bg-[#23272f] shadow-lg rounded-xl p-6 flex flex-col items-center justify-center hover:scale-105 hover:bg-green-500 transition-all duration-200"
           >
             <span className="text-lg font-semibold text-white capitalize mb-2">
               {_id}
@@ -92,7 +92,7 @@ const ClassOverview = () => {
             <span className="text-4xl font-bold text-white drop-shadow">
               {count}
             </span>
-            <span className="text-sm text-indigo-200 mt-2">
+            <span className="text-md text-gray-200 mt-2">
               {count === 1 ? "Class" : "Classes"}
             </span>
           </div>

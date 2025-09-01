@@ -234,7 +234,7 @@ const EachClass = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center sm:ml-64 mt-40 bg-opacity-50">
-          <div className="bg-[#23272F] p-8 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-[#23272F] border-1 border-green-500 p-8 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-xl font-bold mb-4 text-white">Add New Class</h2>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -284,7 +284,7 @@ const EachClass = () => {
                 <input
                   type="color"
                   {...register("color")}
-                  defaultValue="#e64524"
+                  defaultValue="#fff"
                   className="w-10 h-10 p-0 border-none"
                 />
               </div>
@@ -317,7 +317,7 @@ const EachClass = () => {
       {/* Show data in table */}
       <table className="min-w-full bg-[#23272F] rounded-lg shadow-md ">
         <thead>
-          <tr>
+          <tr className="bg-green-500 rounded-tl-2xl">
             <th className="py-2 px-4 text-white text-center">Subject</th>
             <th className="py-2 px-4 text-white text-center">Instructor</th>
             <th className="py-2 px-4 text-white text-center">Start Time</th>
@@ -335,12 +335,11 @@ const EachClass = () => {
             </tr>
           ) : (
             classes.map((cls) => (
-              <tr
-                key={cls._id}
-                className={`border-b border-gray-700`}
-                style={{ backgroundColor: cls.color }}
-              >
-                <td className="py-2 px-4 text-center text-white">
+              <tr key={cls._id} className={`border-b border-gray-700 hover:bg-[#131920]`}>
+                <td
+                  style={{ color: cls.color }}
+                  className="py-2 px-4 font-bold text-center text-white"
+                >
                   {cls.subject}
                 </td>
                 <td className="py-2 px-4 text-center text-white">
