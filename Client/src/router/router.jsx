@@ -9,9 +9,6 @@ import ClassScheduler from "../components/dashboard/ClassScheduler/ClassSchedule
 import BudgetTracker from "../components/dashboard/BudgetTracker/BudgetTracker";
 import EachClass from "../components/dashboard/ClassScheduler/EachClass";
 import ClassOverview from "../components/dashboard/ClassScheduler/ClassOverview";
-import BudgetOverview from "../components/dashboard/BudgetTracker/BudgetOverview";
-import Incomes from "../components/dashboard/BudgetTracker/Incomes";
-import Expenses from "../components/dashboard/BudgetTracker/Expenses";
 import BudgetDetail from "../components/dashboard/BudgetTracker/BudgetDetail";
 
 export const router = createBrowserRouter([
@@ -53,16 +50,8 @@ export const router = createBrowserRouter([
                 Component: BudgetDetail,
               },
               {
-                path:"overview",
+                path: "overview",
                 Component: BudgetDetail,
-              },
-              {
-                path: "incomes",
-                Component: Incomes,
-              },
-              {
-                path: "expenses",
-                Component: Expenses,
               },
             ],
           },

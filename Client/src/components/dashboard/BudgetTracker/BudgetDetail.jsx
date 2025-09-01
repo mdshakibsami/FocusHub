@@ -1,5 +1,6 @@
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -7,6 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../../utils/api";
 import { MdDeleteSweep, MdLibraryAdd } from "react-icons/md";
 import { AiFillEdit } from "react-icons/ai";
+
+const getAllTransaction = async (type) => {
+  const res = await api.get(`/all-transactions/${type}`);
+  return res.data;
+};
 
 const classSchema = z.object({
   title: z.string().min(2, "Title is required"),
@@ -23,11 +29,12 @@ const classSchema = z.object({
 const BudgetDetail = () => {
   const [transactions, setTransactions] = useState([]);
   const [selectedTransactions, setSelectedTransactions] = useState(null);
-  const [transactionCount, setTransactionCount] = useState(null);
+  const [transactionAmount, setTransactionAmount] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [selectType, setSelectType] = useState("All");
   // Special technique developed by Md Shakib
   const [skCount, setSkCount] = useState(0);
-
+  //==========================================================
   const {
     register,
     handleSubmit,
@@ -200,28 +207,26 @@ const BudgetDetail = () => {
     { code: "ZWL", name: "Zimbabwean Dollar", symbol: "Z$" },
   ];
 
+  //============== Initial, Add, Update, Delete ==============
   const handleTransaction = () => {
     setShowModal(true);
   };
-
   useEffect(() => {
     (async () => {
-      const allTransaction = await api.get("/all-transactions");
-      setTransactions(allTransaction.data);
+      const allTransaction = await getAllTransaction(selectType);
+      setTransactions(allTransaction);
     })();
     (async () => {
       const getTransactionCount = await api.get("/transaction-count");
       const countObject = getTransactionCount.data.reduce((acc, item) => {
-        acc[item._id] = item.count;
+        acc[item._id] = item.totalAmount;
         return acc;
       }, {});
-      setTransactionCount(countObject);
+      setTransactionAmount(countObject);
     })();
-  }, [showModal, skCount]);
+  }, [showModal, skCount, selectType]);
 
-  //==============================
   const onSubmit = async (data) => {
-    console.log(data);
     setShowModal(false);
     if (selectedTransactions?._id) {
       const res = await api.put(
@@ -307,38 +312,140 @@ const BudgetDetail = () => {
       });
     }
   };
+  //==========================================================
+  // ================ Search and Select ======================
+
+  const handleTypeChange = (e) => {
+    setSelectType(e.target.value);
+  };
+  //==========================================================
+  // ====================== Charts ===========================
+  const pieData = {
+    labels: ["Income", "Expense"],
+    datasets: [
+      {
+        label: "Amount",
+        data: [transactionAmount?.Income || 0, transactionAmount?.Expense || 0],
+        backgroundColor: ["#29c76e", "#FF4C29"],
+        borderColor: "#fff",
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const pieOptions = {
+    plugins: {
+      legend: {
+        labels: {
+          color: "#fff",
+          font: { size: 16 },
+        },
+      },
+    },
+  };
+  // =========================================================
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <div className="flex gap-5">
-          <div
-            className="py-2 px-3 bg-green-600 rounded-lg my-4"
-            title="Add New Class"
-          >
-            <h1 className="font-bold">
-              Total Incomes :
-              {transactionCount && <> {transactionCount.Income}</>}
-            </h1>
+      <div className="grid grid-cols-2">
+        <div className="flex flex-col justify-start items-start pr-8">
+          <h1 className="text-3xl font-extrabold text-green-500 mb-2">
+            Money Management Matters
+          </h1>
+          <p className="text-lg text-gray-200 mb-2 text-justify">
+            Effective money management is the foundation of financial success.
+            It allows you to take control of your finances instead of letting
+            money control you. By carefully tracking your income and expenses,
+            you gain a clear picture of where your money is going. This
+            awareness helps you identify unnecessary spending and focus on what
+            truly matters. Setting short-term and long-term financial goals
+            gives you direction and purpose. With goals in place, you can save
+            consistently, invest wisely, and prepare for unexpected situations.
+          </p>
+        </div>
+        <div className="grid grid-cols-2  items-stretch">
+          <div className="flex flex-col mt-4 justify-center h-full gap-6">
+            <div
+              className="py-3 px-6 bg-green-600 rounded-lg flex items-center justify-center shadow-md"
+              title="Total Income"
+            >
+              <h1 className="font-bold text-center text-white text-lg">
+                Total Incomes :
+                {transactionAmount && (
+                  <span className="ml-2">{transactionAmount.Income} ৳</span>
+                )}
+              </h1>
+            </div>
+            <div
+              className="py-3 px-6 bg-red-600 rounded-lg flex items-center justify-center shadow-md"
+              title="Total Expense"
+            >
+              <h1 className="font-bold text-center text-white text-lg">
+                Total Expenses :
+                {transactionAmount && (
+                  <span className="ml-2">{transactionAmount.Expense} ৳</span>
+                )}
+              </h1>
+            </div>
+            <div
+              className="py-3 px-6 bg-blue-600 rounded-lg flex items-center justify-center shadow-md"
+              title="Net Total"
+            >
+              <h1 className="font-bold text-center text-white text-lg">
+                Total Amount :
+                {transactionAmount && (
+                  <span className="ml-2">
+                    {transactionAmount.Income - transactionAmount.Expense} ৳
+                  </span>
+                )}
+              </h1>
+            </div>
           </div>
-
-          <div
-            className="py-2 px-3 bg-red-600 rounded-lg my-4"
-            title="Add New Class"
-          >
-            <h1 className="font-bold">
-              Total Incomes :
-              {transactionCount && <> {transactionCount.Expense}</>}
-            </h1>
+          <div className="flex flex-col  justify-center items-center h-full">
+            {transactionAmount && (
+              <>
+                <h2 className="text-xl font-bold text-white mb-4 text-center">
+                  Income vs Expense
+                </h2>
+                <div
+                  className="bg-[#23272f] rounded-2xl border-2 border-green-400 shadow-xl p-4 flex items-center justify-center"
+                  style={{ width: 220, height: 220 }}
+                >
+                  <Pie
+                    data={pieData}
+                    options={{ ...pieOptions, maintainAspectRatio: false }}
+                    width={180}
+                    height={180}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
-        <button
-          className="py-2 px-3 bg-green-500 rounded-lg my-4 hover:bg-[#2C394B] "
-          title="Add New Class"
-          onClick={handleTransaction}
-        >
-          <MdLibraryAdd size={30} />
-        </button>
+      </div>
+
+      <hr className="mt-2" />
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          {/* Select Income/Expense */}
+          <select
+            className="py-2 px-3 rounded-lg border border-gray-400 bg-[#23272f] text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+            onChange={(e) => handleTypeChange(e)}
+          >
+            <option value="All">All</option>
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+          </select>
+        </div>
+        <div>
+          <button
+            className="py-2 px-3 bg-green-500 rounded-lg my-4 hover:bg-[#2C394B] "
+            title="Add New Class"
+            onClick={handleTransaction}
+          >
+            <MdLibraryAdd size={30} />
+          </button>
+        </div>
       </div>
 
       {/* Modal */}
@@ -458,6 +565,7 @@ const BudgetDetail = () => {
       )}
 
       {/* Show data in table */}
+
       <table className="min-w-full bg-[#23272F] rounded-lg shadow-md ">
         <thead>
           <tr className="bg-green-500 rounded-tl-2xl">

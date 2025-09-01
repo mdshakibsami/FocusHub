@@ -52,9 +52,22 @@ async function run() {
       }
     });
 
-    app.get("/all-transactions", async (_req, res) => {
-      const result = await transactionCollection.find({}).toArray();
-      res.send(result);
+    app.get("/all-transactions/:search", async (req, res) => {
+      console.log("dsjfkfjdfdklffkfdj");
+      try {
+        const search = req.params.search;
+        if (search === "All") {
+          const result = await transactionCollection.find({}).toArray();
+          res.send(result);
+        } else if (search === "Income" || search === "Expense") {
+          const result = await transactionCollection
+            .find({ type: search })
+            .toArray();
+          res.send(result);
+        }
+      } catch (error) {
+        res.send("Server Error ", error);
+      }
     });
 
     // get the income count and expense count
@@ -65,7 +78,7 @@ async function run() {
             {
               $group: {
                 _id: "$type",
-                count: { $sum: 1 },
+                totalAmount: { $sum: "$amount" },
               },
             },
           ])
@@ -100,7 +113,7 @@ async function run() {
       try {
         const { id } = req.params;
         const updatedClass = req.body;
-        console.log(id, updatedClass);
+
         const result = await transactionCollection.updateOne(
           {
             _id: new ObjectId(id),
