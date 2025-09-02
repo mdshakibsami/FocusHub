@@ -29,6 +29,7 @@ async function run() {
     const transactionCollection = client
       .db("FocusHub")
       .collection("transactions");
+    const subjectCollection = client.db("FocusHub").collection("subjects");
 
     // ===============================================================
     app.get("/", (_req, res) => {
@@ -37,10 +38,122 @@ async function run() {
 
     // // Query to clear a database collection
     // app.get("/deleteAll", async (_req, res) => {
-    //   await transactionCollection.deleteMany({});
+    //   await subjectCollection.deleteMany({});
     //   res.json({success:true})
     // });
 
+    // ====================== Study Planner ==========================
+
+    // => Adding Subject
+    app.post("/add-subject", async (req, res) => {
+      const subjectData = req.body;
+      const newSubject = subjectData.subject;
+      const exists = await subjectCollection.findOne({ subject: newSubject });
+      if (exists) {
+        res.json({ message: "already exist" });
+      } else {
+        const result = await subjectCollection.insertOne(subjectData);
+        res.send(result);
+      }
+    });
+
+    // => Getting All Subjects
+    app.get("/get-subject", async (req, res) => {
+      const result = await subjectCollection.find().toArray();
+      res.send(result);
+    });
+    // => delete by subject
+    app.delete("/delete/:subject", async (req, res) => {
+      const subject = req.params.subject;
+      const result = await subjectCollection.deleteOne({ subject: subject });
+      res.send(result);
+    });
+
+    // => Setting all Subtasks
+    app.post("/subjects/subtask", async (req, res) => {
+      try {
+        const newTask = req.body;
+        const { subject, ...taskData } = newTask;
+        const result = await subjectCollection.updateOne(
+          {
+            subject: newTask.subject,
+          },
+          { $push: { task: newTask } }
+        );
+        res.send(result);
+      } catch (error) {
+        res.json({ success: false });
+      }
+    });
+
+    // delete subtask
+    app.delete("/delete-subtask/:subject/:index", async (req, res) => {
+      const { subject, index } = req.params;
+      const taskIndex = parseInt(index, 10); // convert to number
+
+      try {
+        // Step 1: unset the element at that index
+        await subjectCollection.updateOne(
+          { subject },
+          { $unset: { [`task.${taskIndex}`]: 1 } }
+        );
+
+        // Step 2: remove null values (clean up)
+        const result = await subjectCollection.updateOne(
+          { subject },
+          { $pull: { task: null } }
+        );
+
+        res.send(result);
+      } catch (err) {
+        console.error("Error deleting subtask:", err);
+        res.status(500).send("Error deleting subtask");
+      }
+    });
+
+    // handle status
+    app.put("/update-status", async (req, res) => {
+      const getStatus = req.body.status;
+      const index = req.body.tablerow;
+      const subject = req.body.subject;
+      if (getStatus === "Completed")
+        res.json({ message: "Task is already completed" });
+      let newStatus = "Start";
+
+      if (getStatus === "Start") newStatus = "In Progress";
+      else if (getStatus === "In Progress") newStatus = "Completed";
+
+      const result = await subjectCollection.updateOne(
+        { subject },
+        {
+          $set: { [`task.${index}.status`]: newStatus },
+        }
+      );
+
+      res.send(result);
+    });
+
+    // count subject
+    app.get("/subject-count", async (_req, res) => {
+      try {
+        const subjects = await subjectCollection.find().toArray();
+        let totalSubtasks = 0;
+        let completedSubtasks = 0;
+
+        subjects.forEach((subject) => {
+          if (Array.isArray(subject.task)) {
+            totalSubtasks += subject.task.length;
+            completedSubtasks += subject.task.filter(
+              (t) => t.status === "Completed"
+            ).length;
+          }
+        });
+
+        res.json({ totalSubtasks, completedSubtasks });
+      } catch (err) {
+        res.status(500).json({ error: "Server error" });
+      }
+    });
     // ====================== Budget Tracker =========================
     app.post("/add-transaction", async (req, res) => {
       try {
@@ -53,7 +166,6 @@ async function run() {
     });
 
     app.get("/all-transactions/:search", async (req, res) => {
-      console.log("dsjfkfjdfdklffkfdj");
       try {
         const search = req.params.search;
         if (search === "All") {
@@ -84,25 +196,6 @@ async function run() {
           ])
           .toArray();
 
-        res.json(result);
-      } catch (err) {
-        res.status(500).json({ error: "Server error" });
-      }
-    });
-
-    // get all income count
-    app.get("/all-income-count", async (_req, res) => {
-      try {
-        const result = await transactionCollection
-          .aggregate([
-            {
-              $group: {
-                _id: "$title",
-                count: { $sum: 1 },
-              },
-            },
-          ])
-          .toArray();
         res.json(result);
       } catch (err) {
         res.status(500).json({ error: "Server error" });

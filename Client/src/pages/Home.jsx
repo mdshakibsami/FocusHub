@@ -3,6 +3,8 @@ import Navbar from "../components/navbar/Navbar";
 import { FiHome, FiUser, FiSettings, FiMenu, FiX } from "react-icons/fi";
 import { FaChalkboardTeacher, FaMoneyCheckAlt } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router";
+import { FcPlanner } from "react-icons/fc";
+
 
 const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -67,6 +69,19 @@ const Home = () => {
                 >
                   <FaMoneyCheckAlt className="text-xl" />
                   Budget Tracker
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to={"/study-planner"}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-6 py-3 rounded-lg transition-colors hover:bg-[#2C394B]${
+                      isActive ? " bg-[#e64524]" : ""
+                    }`
+                  }
+                >
+                  <FcPlanner className="text-xl" />
+                  Study Planner
                 </NavLink>
               </li>
             </ul>
