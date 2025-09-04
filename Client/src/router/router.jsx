@@ -11,6 +11,9 @@ import EachClass from "../components/dashboard/ClassScheduler/EachClass";
 import ClassOverview from "../components/dashboard/ClassScheduler/ClassOverview";
 import BudgetDetail from "../components/dashboard/BudgetTracker/BudgetDetail";
 import StudyPlanner from "../components/dashboard/StudyPlanner/StudyPlanner";
+import QAGenerator from "../components/dashboard/QAGenerator/QAGenerator";
+import MCQ from "../components/dashboard/QAGenerator/MCQ";
+import TrueFalse from "../components/dashboard/QAGenerator/TrueFalse";
 
 export const router = createBrowserRouter([
   {
@@ -59,16 +62,20 @@ export const router = createBrowserRouter([
           {
             path: "study-planner",
             Component: StudyPlanner,
-            // children: [
-            //   {
-            //     index: true,
-            //     Component: BudgetDetail,
-            //   },
-            //   {
-            //     path: "overview",
-            //     Component: BudgetDetail,
-            //   },
-            // ],
+          },
+          {
+            path: "QA-generator",
+            Component: QAGenerator,
+            children: [
+              {
+                path: "MCQ",
+                Component: MCQ,
+              },
+              {
+                path: "TF",
+                Component: TrueFalse,
+              },
+            ],
           },
         ],
       },

@@ -4,7 +4,7 @@ import { FiHome, FiUser, FiSettings, FiMenu, FiX } from "react-icons/fi";
 import { FaChalkboardTeacher, FaMoneyCheckAlt } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router";
 import { FcPlanner } from "react-icons/fc";
-
+import { SiAnswer } from "react-icons/si";
 
 const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -25,12 +25,12 @@ const Home = () => {
         {/* Overlay and Drawer */}
         {drawerOpen && (
           <div
-            className="fixed inset-0 z-30 bg-black bg-opacity-60 md:hidden"
+            className="fixed  inset-0 z-30 bg-black bg-opacity-60 md:hidden"
             onClick={() => setDrawerOpen(false)}
           ></div>
         )}
         <aside
-          className={`fixed z-40 inset-y-0 left-0 w-64 bg-[#23272F] text-white transform transition-transform duration-300 md:relative md:translate-x-0 md:w-64 flex flex-col ${
+          className={`fixed  z-40 inset-y-0 left-0 w-64 bg-[#23272F] text-white transform transition-transform duration-300 md:relative md:translate-x-0 md:w-64 flex flex-col ${
             drawerOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -69,6 +69,19 @@ const Home = () => {
                 >
                   <FaMoneyCheckAlt className="text-xl" />
                   Budget Tracker
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to={"/QA-generator"}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-6 py-3 rounded-lg transition-colors hover:bg-[#2C394B]${
+                      isActive ? " bg-[#e64524]" : ""
+                    }`
+                  }
+                >
+                  <SiAnswer className="text-xl" />
+                  Exam Q&A generator
                 </NavLink>
               </li>
               <li>

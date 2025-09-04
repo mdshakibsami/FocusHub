@@ -1,6 +1,10 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+
+const fs = require("fs");
+const path = require("path");
+
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
@@ -30,6 +34,7 @@ async function run() {
       .db("FocusHub")
       .collection("transactions");
     const subjectCollection = client.db("FocusHub").collection("subjects");
+    const questionCollection = client.db("FocusHub").collection("questions");
 
     // ===============================================================
     app.get("/", (_req, res) => {
@@ -41,6 +46,33 @@ async function run() {
     //   await subjectCollection.deleteMany({});
     //   res.json({success:true})
     // });
+
+    // ====================== Q&A Generator  ==========================
+    // GET /qa-generator?subject=Math&type=MCQ&number=10
+    app.get("/qa-generator", async (req, res) => {
+      const { subject, type, difficulty, number } = req.query;
+      console.log(subject, type, difficulty, number);
+      const result = await questionCollection
+        .find({
+          $and: [
+            { subject: subject },
+            { type: type },
+            { difficulty: difficulty },
+          ],
+        })
+        .toArray();
+
+      const questionsArray = result[0].questions;
+      const length = questionsArray.length;
+
+      const newQuestions = [];
+      for (let i = 0; i < number; i++) {
+        const randomIndex = Math.floor(Math.random() * length);
+        // console.log(i, randomIndex, questionsArray[randomIndex]);
+        newQuestions.push(questionsArray[randomIndex]);
+      }
+      res.json({ success: true, newQuestions });
+    });
 
     // ====================== Study Planner ==========================
 
