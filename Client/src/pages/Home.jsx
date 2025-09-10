@@ -5,6 +5,7 @@ import { FaChalkboardTeacher, FaMoneyCheckAlt } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router";
 import { FcPlanner } from "react-icons/fc";
 import { SiAnswer } from "react-icons/si";
+import { PiNotebookFill } from "react-icons/pi";
 
 const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -95,6 +96,19 @@ const Home = () => {
                 >
                   <FcPlanner className="text-xl" />
                   Study Planner
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to={"/flashcards"}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-6 py-3 rounded-lg transition-colors hover:bg-[#2C394B]${
+                      isActive ? " bg-[#e64524]" : ""
+                    }`
+                  }
+                >
+                  <PiNotebookFill className="text-xl" />
+                  Flashcards
                 </NavLink>
               </li>
             </ul>

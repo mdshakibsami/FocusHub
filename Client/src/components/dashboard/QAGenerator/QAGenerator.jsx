@@ -1,21 +1,33 @@
-import { Outlet } from "react-router";
 import { api } from "../../../utils/api";
 import { useState } from "react";
-import MCQ from "./MCQ";
-import TrueFalse from "./TrueFalse";
+import TrueFalseQuiz from "./TrueFalseQuiz";
+import MCQQuiz from "./MCQQuiz";
+import MCQQuestions from "./MCQQuestions";
+import TFQuestions from "./TFQuestions";
 
 const QAGenerator = () => {
   const [questionsSet, setQuestionsSet] = useState([]);
   const [questionsType, setQuestionsType] = useState("");
-  const handleQuestionAnswerGenerator = async (e) => {
+  const [questionsGenerate, setQuestionsGenerate] = useState(false);
+
+  const handleExamQuestionsGenerator = async (e) => {
     e.preventDefault();
+    setQuestionsSet([]);
+    const action = e.nativeEvent.submitter.value;
+
+    if (action === "quiz") {
+      setQuestionsGenerate(false);
+    } else if (action === "qaGenerator") {
+      setQuestionsGenerate(true);
+    }
     const form = e.target;
     const subject = form.subject.value;
     const type = form.questionType.value;
     const number = form.numberOfQuestions.value;
     const difficulty = form.difficulty.value;
-    // console.log(subject, type, number, difficulty);
     setQuestionsType(type);
+
+    if (!subject || !type || !number || !difficulty) return alert();
 
     //qa-generator?subject=Math&type=MCQ&number=10
     const result = await api.get(
@@ -28,22 +40,22 @@ const QAGenerator = () => {
   };
 
   return (
-    <div className="mx-2">
-      <div className="py-6">
-        <h2 className="text-2xl font-bold text-center">
-          Questions and Answers Generator
+    <div className="mx-4">
+      <div className="py-8">
+        <h2 className="text-3xl font-extrabold text-center text-white drop-shadow-lg tracking-wide">
+          Quiz, Questions and Answers Generator
         </h2>
       </div>
 
-      <div className=" bg-green-500 p-6 rounded-lg  ">
+      <div className="bg-[#23272f] p-8 rounded-2xl shadow-xl   border-2 border-[#4c22d5]">
         <form
-          className="flex  gap-4  "
-          onSubmit={handleQuestionAnswerGenerator}
+          className="flex flex-col gap-8"
+          onSubmit={handleExamQuestionsGenerator}
         >
-          <div className="flex justify-between gap-2 w-full ">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <select
               name="subject"
-              className="p-2   bg-[#23272f] rounded border"
+              className="p-3 bg-[#181a20] text-white rounded-xl border-2 border-[#3b424f] focus:border-[#4c22d5] focus:outline-none font-semibold"
             >
               <option value="">Choose Subject</option>
               <option value="Math">Math</option>
@@ -53,7 +65,7 @@ const QAGenerator = () => {
 
             <select
               name="questionType"
-              className="p-2  bg-[#23272f] rounded border"
+              className="p-3 bg-[#181a20] text-white rounded-xl border-2 border-[#3b424f] focus:border-[#4c22d5] focus:outline-none font-semibold"
             >
               <option value="">Question Type</option>
               <option value="MCQ">MCQ</option>
@@ -62,7 +74,7 @@ const QAGenerator = () => {
 
             <select
               name="numberOfQuestions"
-              className="p-2  bg-[#23272f] rounded border"
+              className="p-3 bg-[#181a20] text-white rounded-xl border-2 border-[#3b424f] focus:border-[#4c22d5] focus:outline-none font-semibold"
             >
               <option value="">Number of Questions</option>
               <option value="5">5</option>
@@ -75,27 +87,49 @@ const QAGenerator = () => {
 
             <select
               name="difficulty"
-              className="p-2  bg-[#23272f] rounded border"
+              className="p-3 bg-[#181a20] text-white rounded-xl border-2 border-[#3b424f] focus:border-[#4c22d5] focus:outline-none font-semibold"
             >
               <option value="">Difficulty Level</option>
               <option value="Easy">Easy</option>
               <option value="Hard">Hard</option>
             </select>
+          </div>
+          <div className="flex gap-6 justify-center mt-2">
+            <button
+              type="submit"
+              name="action"
+              value={"qaGenerator"}
+              className="bg-green-500 text-white py-3 px-8 rounded-xl font-extrabold shadow transition-colors text-lg hover:bg-green-600 tracking-wide border-2 border-[#23272f]"
+            >
+              Q&A Generator
+            </button>
 
             <button
               type="submit"
-              className="bg-[#e64524] text-white py-2 px-4 rounded font-bold hover:bg-[#c53b1f]"
+              name="action"
+              value={"quiz"}
+              className="bg-green-500 text-white py-3 px-8 rounded-xl font-extrabold shadow hover:bg-green-600 transition-colors text-lg tracking-wide border-2 border-[#23272f]"
             >
-              Generate
+              Quiz
             </button>
           </div>
         </form>
       </div>
 
-      {questionsSet && questionsType === "MCQ" && (
-        <MCQ questionsSet={questionsSet}></MCQ>
+      {questionsGenerate && questionsType === "MCQ" && (
+        <MCQQuestions questionsSet={questionsSet}></MCQQuestions>
       )}
-      {questionsSet && questionsType === "TF" && <TrueFalse questionsSet={questionsSet}></TrueFalse>}
+      {questionsGenerate && questionsType === "TF" && (
+        <TFQuestions questionsSet={questionsSet}></TFQuestions>
+      )}
+
+      {questionsSet && questionsType === "MCQ" && !questionsGenerate && (
+        <MCQQuiz questionsSet={questionsSet}></MCQQuiz>
+      )}
+
+      {questionsSet && questionsType === "TF" && !questionsGenerate && (
+        <TrueFalseQuiz questionsSet={questionsSet}></TrueFalseQuiz>
+      )}
     </div>
   );
 };

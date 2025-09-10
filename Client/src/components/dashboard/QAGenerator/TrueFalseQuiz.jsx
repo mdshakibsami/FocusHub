@@ -1,11 +1,12 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
+import React from "react";
 
-const MCQ = ({ questionsSet }) => {
+const TrueFalseQuiz = ({ questionsSet }) => {
   const [answers, setAnswers] = useState({});
-  const actualAnswers = [];
-  questionsSet.map((qs) => actualAnswers.push(qs.answer));
-  console.log("Actual Answer", actualAnswers);
+  console.log(questionsSet);
+  // Get actual answers array
+  const actualAnswers = questionsSet.map((qs) => qs.answer);
 
   // handle change for each radio button
   const handleChange = (qIndex, value) => {
@@ -24,6 +25,8 @@ const MCQ = ({ questionsSet }) => {
       if (actualAnswers[i] !== answers[i]) wrongAnswer += 1;
     }
     const score = totalAnswers - wrongAnswer;
+    console.log(score);
+
     Swal.fire({
       title: "Quiz Completed!",
       text: `Your score: ${score} / ${totalAnswers}`,
@@ -40,32 +43,30 @@ const MCQ = ({ questionsSet }) => {
       {questionsSet.map((oneQS, qIndex) => (
         <div
           key={qIndex}
-          className="my-6 p-6 border-2 border-green-400 rounded-xl shadow-lg  from-[#23272f]  hover:scale-[1.01] transition-transform duration-200"
+          className=" flex items-center justify-between my-6 p-6 border-2 border-green-400 rounded-xl shadow-lg  from-[#23272f]  hover:scale-[1.01] transition-transform duration-200"
         >
-          <legend className="font-bold text-lg mb-4">
+          <legend className="text-lg text-green-500 font-semibold">
             {qIndex + 1}. {oneQS.question}
           </legend>
 
-          <div className="grid grid-cols-2 gap-4">
-            {oneQS.options.map((opt, optIndex) => {
+          <div className="flex gap-8 justify-center ">
+            {["True", "False"].map((opt, optIndex) => {
               const id = `q${qIndex}-opt${optIndex}`;
               return (
-                <div
-                  key={id}
-                  className="flex items-center bg-[#3b424f] rounded-lg shadow px-3 py-2 hover:bg-[#e64524] transition-colors"
-                >
+                <div key={id} className="flex items-center">
                   <input
                     type="radio"
                     id={id}
-                    className="radio radio-success"
+                    className="radio radio-error"
                     name={`question-${qIndex}`}
                     onChange={() => handleChange(qIndex, opt)}
                     required
                   />
-
                   <label
                     htmlFor={id}
-                    className="ml-2 text-white font-medium cursor-pointer"
+                    className={`cursor-pointer ml-2 font-bold ${
+                      opt === "True" ? "text-green-500" : "text-red-500"
+                    }`}
                   >
                     {opt}
                   </label>
@@ -79,7 +80,7 @@ const MCQ = ({ questionsSet }) => {
       <div className="flex justify-center mt-8">
         <button
           type="submit"
-          className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-green-700 transition-colors"
+          className="bg-green-600 mb-5 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-green-700 transition-colors"
         >
           Submit
         </button>
@@ -88,4 +89,4 @@ const MCQ = ({ questionsSet }) => {
   );
 };
 
-export default MCQ;
+export default TrueFalseQuiz;

@@ -12,8 +12,9 @@ import ClassOverview from "../components/dashboard/ClassScheduler/ClassOverview"
 import BudgetDetail from "../components/dashboard/BudgetTracker/BudgetDetail";
 import StudyPlanner from "../components/dashboard/StudyPlanner/StudyPlanner";
 import QAGenerator from "../components/dashboard/QAGenerator/QAGenerator";
-import MCQ from "../components/dashboard/QAGenerator/MCQ";
-import TrueFalse from "../components/dashboard/QAGenerator/TrueFalse";
+import MCQQuiz from "../components/dashboard/QAGenerator/MCQQuiz";
+import TrueFalseQuiz from "../components/dashboard/QAGenerator/TrueFalseQuiz";
+import Flashcards from "../components/dashboard/Flashcards/Flashcards";
 
 export const router = createBrowserRouter([
   {
@@ -64,16 +65,30 @@ export const router = createBrowserRouter([
             Component: StudyPlanner,
           },
           {
+            path: "flashcards",
+            Component: Flashcards,
+            children: [
+              {
+                path: "MCQ",
+                Component: MCQQuiz,
+              },
+              {
+                path: "TF",
+                Component: TrueFalseQuiz,
+              },
+            ],
+          },
+          {
             path: "QA-generator",
             Component: QAGenerator,
             children: [
               {
                 path: "MCQ",
-                Component: MCQ,
+                Component: MCQQuiz,
               },
               {
                 path: "TF",
-                Component: TrueFalse,
+                Component: TrueFalseQuiz,
               },
             ],
           },

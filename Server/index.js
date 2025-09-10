@@ -35,6 +35,7 @@ async function run() {
       .collection("transactions");
     const subjectCollection = client.db("FocusHub").collection("subjects");
     const questionCollection = client.db("FocusHub").collection("questions");
+    const flashcardCollection = client.db("FocusHub").collection("flashcards");
 
     // ===============================================================
     app.get("/", (_req, res) => {
@@ -46,6 +47,19 @@ async function run() {
     //   await subjectCollection.deleteMany({});
     //   res.json({success:true})
     // });
+
+    // ====================== Flashcards  ==========================
+
+    app.post("/flashcard", async (req, res) => {
+      const flashcard = req.body;
+      const result = await flashcardCollection.insertOne(flashcard);
+      res.send(result);
+    });
+
+    app.get("/flashcard", async (req, res) => {
+      const flashcard = await flashcardCollection.find({}).toArray();
+      res.send(flashcard);
+    });
 
     // ====================== Q&A Generator  ==========================
     // GET /qa-generator?subject=Math&type=MCQ&number=10
