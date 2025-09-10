@@ -2,8 +2,6 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "../Layouts/RootLayout";
 import NotFound from "../components/not-found/NotFound";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
 import DashboardHome from "../components/dashboard/Home/DashboardHome";
 import ClassScheduler from "../components/dashboard/ClassScheduler/ClassScheduler";
 import BudgetTracker from "../components/dashboard/BudgetTracker/BudgetTracker";

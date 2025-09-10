@@ -5,7 +5,6 @@ const MCQQuiz = ({ questionsSet }) => {
   const [answers, setAnswers] = useState({});
   const actualAnswers = [];
   questionsSet.map((qs) => actualAnswers.push(qs.answer));
-  console.log("Actual Answer", actualAnswers);
 
   // handle change for each radio button
   const handleChange = (qIndex, value) => {
@@ -40,19 +39,19 @@ const MCQQuiz = ({ questionsSet }) => {
       {questionsSet.map((oneQS, qIndex) => (
         <div
           key={qIndex}
-          className="my-6 p-6 border-2 border-green-400 rounded-xl shadow-lg  from-[#23272f]  hover:scale-[1.01] transition-transform duration-200"
+          className="my-6 p-6 border-2 border-green-400 rounded-2xl shadow-2xl bg-gradient-to-br from-[#23272f] via-[#334756] to-[#4c22d5] hover:scale-[1.01] transition-transform duration-200"
         >
-          <legend className="font-bold text-lg mb-4">
+          <legend className="font-bold text-xl mb-4 text-green-400 drop-shadow-lg">
             {qIndex + 1}. {oneQS.question}
           </legend>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {oneQS.options.map((opt, optIndex) => {
               const id = `q${qIndex}-opt${optIndex}`;
               return (
                 <div
                   key={id}
-                  className="flex items-center bg-[#3b424f] rounded-lg shadow px-3 py-2  transition-colors"
+                  className="flex items-center bg-[#23272f] rounded-xl shadow px-4 py-3 border-2 border-[#3b424f] hover:bg-[#334756] transition-colors"
                 >
                   <input
                     type="radio"
@@ -65,7 +64,7 @@ const MCQQuiz = ({ questionsSet }) => {
 
                   <label
                     htmlFor={id}
-                    className="ml-2 text-white font-medium cursor-pointer"
+                    className="ml-2 text-white font-semibold cursor-pointer"
                   >
                     {opt}
                   </label>
@@ -79,7 +78,7 @@ const MCQQuiz = ({ questionsSet }) => {
       <div className="flex justify-center mt-8">
         <button
           type="submit"
-          className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-green-700 transition-colors"
+          className="bg-green-600 text-white px-8 py-3 rounded-2xl font-extrabold shadow-lg hover:bg-green-700 transition-colors border-2 border-green-400"
         >
           Submit
         </button>

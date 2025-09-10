@@ -11,7 +11,6 @@ const Flashcards = () => {
   useEffect(() => {
     (async () => {
       const result = await api.get("/flashcard");
-      console.log(result.data);
       setCards(result.data);
     })();
   }, [refetch]);
@@ -54,20 +53,20 @@ const Flashcards = () => {
 
   return (
     <div className="px-2 sm:px-4 md:px-8">
-      <div className="py-6 sm:py-8">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-white drop-shadow-lg tracking-wide">
-          Quiz, Questions and Answers Generator
-        </h2>
+      <div className="py-6 sm:py-10">
+        <h1 className="text-4xl font-extrabold text-white text-center mb-6 drop-shadow-lg tracking-wide">
+         Flash Cards
+        </h1>
       </div>
 
-      <div className="bg-[#23272f] p-2 sm:p-4 rounded-2xl shadow-xl border-2 border-[#4c22d5]">
+      <div className="bg-gradient-to-br from-[#23272f] via-[#334756] to-[#4c22d5] p-2 sm:p-4 rounded-2xl shadow-2xl border-2 border-[#4c22d5]">
         <div>
-          <div className="flex items-center justify-between ">
-            <div className="text-lg font-bold text-white">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div className="text-lg font-bold text-white text-center sm:text-left">
               Manage your notes and flashcards for each subject or topic.
             </div>
             <button
-              className="bg-green-500 text-white py-2 px-6 rounded-xl font-bold shadow hover:bg-green-600 transition-colors border-2 border-[#23272f]"
+              className="bg-green-500 text-white py-2 px-6 rounded-xl font-bold shadow-lg hover:bg-green-600 transition-colors border-2 border-green-400 focus:ring-2 focus:ring-green-400"
               onClick={() => setShowModal(true)}
             >
               Add Flashcard
@@ -76,7 +75,7 @@ const Flashcards = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mt-8">
         {cards.map((card, idx) => {
           // ...existing card logic...
           const cardId = card._id || idx;
@@ -136,9 +135,11 @@ const Flashcards = () => {
           return (
             <div
               key={cardId}
-              className={`flip-card cursor-pointer w-full sm:w-80 h-64 mx-auto my-6 sm:my-8 ${
-                card.completed ? "border-2 border-green-500 rounded-xl" : ""
-              }`}
+              className={`flip-card cursor-pointer w-full h-64 mx-auto my-6 sm:my-8 ${
+                card.completed
+                  ? "border-2 border-green-500 rounded-xl shadow-lg"
+                  : "border-2 border-[#4c22d5] rounded-xl shadow-lg"
+              } hover:scale-105 transition-transform duration-300`}
               style={{ perspective: "1000px" }}
             >
               <div
@@ -153,7 +154,7 @@ const Flashcards = () => {
                 }}
               >
                 <div
-                  className="flip-card-front  absolute w-full h-full bg-[#181a20] rounded-xl flex flex-col items-center justify-center text-white"
+                  className="flip-card-front absolute w-full h-full bg-gradient-to-br from-[#181a20] via-[#334756] to-[#4c22d5] rounded-xl flex flex-col items-center justify-center text-white shadow-lg"
                   style={{ backfaceVisibility: "hidden" }}
                   onClick={() =>
                     setFlippedCards((prev) => ({
@@ -163,19 +164,19 @@ const Flashcards = () => {
                   }
                 >
                   <div>
-                    <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-center break-words">
+                    <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-center break-words drop-shadow-lg">
                       {card.subject}
                     </h2>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-6 sm:mt-10 justify-center">
                     <button
-                      className="px-3 py-1 rounded bg-[#e64524] text-white font-bold hover:bg-[#c53b1f]"
+                      className="px-3 py-1 rounded bg-[#e64524] text-white font-bold hover:bg-[#c53b1f] shadow focus:ring-2 focus:ring-red-400"
                       onClick={handleDelete}
                     >
                       Delete
                     </button>
                     <button
-                      className="px-3 py-1 rounded bg-[#22c55e] text-white font-bold hover:bg-[#16a34a]"
+                      className="px-3 py-1 rounded bg-[#22c55e] text-white font-bold hover:bg-[#16a34a] shadow focus:ring-2 focus:ring-green-400"
                       onClick={handleComplete}
                     >
                       Complete
@@ -183,7 +184,7 @@ const Flashcards = () => {
                   </div>
                 </div>
                 <div
-                  className="flip-card-back absolute w-full h-full bg-[#23272f] rounded-xl flex flex-col items-center justify-center text-white"
+                  className="flip-card-back absolute w-full h-full bg-gradient-to-br from-[#23272f] via-[#334756] to-[#4c22d5] rounded-xl flex flex-col items-center justify-center text-white shadow-lg"
                   style={{
                     backfaceVisibility: "hidden",
                     transform: "rotateY(180deg)",
@@ -195,7 +196,7 @@ const Flashcards = () => {
                     }))
                   }
                 >
-                  <p className="font-bold text-center break-words px-2">
+                  <p className="font-bold text-center break-words px-2 text-lg sm:text-xl drop-shadow-lg">
                     {card.content}
                   </p>
                 </div>
@@ -207,9 +208,9 @@ const Flashcards = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-2">
-          <div className="bg-[#23272f] p-4 sm:p-8 rounded-2xl shadow-xl border-2 border-[#4c22d5] w-full max-w-md">
-            <h2 className="text-xl font-bold text-white mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 px-2 animate-fadeIn">
+          <div className="bg-gradient-to-br from-[#23272f] via-[#334756] to-[#4c22d5] p-4 sm:p-8 rounded-2xl shadow-2xl border-2 border-[#4c22d5] w-full max-w-md">
+            <h2 className="text-xl font-bold text-white mb-4 text-center">
               Add New Flashcard
             </h2>
             <form onSubmit={handleFlashcard} className="space-y-4">
@@ -217,25 +218,25 @@ const Flashcards = () => {
                 name="subject"
                 type="text"
                 placeholder="Subject / Topic"
-                className="p-3 rounded-xl bg-[#181a20] text-white border-2 border-[#3b424f] focus:border-[#4c22d5] w-full"
+                className="p-3 rounded-xl bg-[#181a20] text-white border-2 border-[#3b424f] focus:border-[#4c22d5] w-full focus:ring-2 focus:ring-[#4c22d5]"
               />
               <textarea
                 name="content"
                 placeholder="Note content"
-                className="p-3 rounded-xl bg-[#181a20] text-white border-2 border-[#3b424f] focus:border-[#4c22d5] w-full"
+                className="p-3 rounded-xl bg-[#181a20] text-white border-2 border-[#3b424f] focus:border-[#4c22d5] w-full focus:ring-2 focus:ring-[#4c22d5]"
               />
 
               <div className="flex gap-4 justify-end">
                 <button
                   type="button"
-                  className="bg-[#e64524] text-white py-2 px-6 rounded-xl font-bold hover:bg-[#9d2e18]"
+                  className="bg-[#e64524] text-white py-2 px-6 rounded-xl font-bold hover:bg-[#9d2e18] shadow focus:ring-2 focus:ring-red-400"
                   onClick={() => setShowModal(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-500 text-white py-2 px-6 rounded-xl font-bold shadow hover:bg-green-600 transition-colors border-2 border-[#23272f]"
+                  className="bg-green-500 text-white py-2 px-6 rounded-xl font-bold shadow-lg hover:bg-green-600 transition-colors border-2 border-green-400 focus:ring-2 focus:ring-green-400"
                 >
                   Add
                 </button>

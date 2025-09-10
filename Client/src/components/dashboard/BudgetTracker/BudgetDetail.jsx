@@ -16,7 +16,6 @@ const getAllTransaction = async (type) => {
 
 const classSchema = z.object({
   title: z.string().min(2, "Title is required"),
-  currency: z.string().min(1, "Currency is required"),
   type: z.string().min(1, "Type is required"),
   amount: z.preprocess(
     (val) => Number(val),
@@ -43,169 +42,6 @@ const BudgetDetail = () => {
   } = useForm({
     resolver: zodResolver(classSchema),
   });
-
-  const allCurrency = [
-    { code: "AED", name: "United Arab Emirates Dirham", symbol: "د.إ" },
-    { code: "AFN", name: "Afghan Afghani", symbol: "؋" },
-    { code: "ALL", name: "Albanian Lek", symbol: "L" },
-    { code: "AMD", name: "Armenian Dram", symbol: "֏" },
-    { code: "ANG", name: "Netherlands Antillean Guilder", symbol: "ƒ" },
-    { code: "AOA", name: "Angolan Kwanza", symbol: "Kz" },
-    { code: "ARS", name: "Argentine Peso", symbol: "$" },
-    { code: "AUD", name: "Australian Dollar", symbol: "A$" },
-    { code: "AWG", name: "Aruban Florin", symbol: "ƒ" },
-    { code: "AZN", name: "Azerbaijani Manat", symbol: "₼" },
-    {
-      code: "BAM",
-      name: "Bosnia-Herzegovina Convertible Mark",
-      symbol: "KM",
-    },
-    { code: "BBD", name: "Barbadian Dollar", symbol: "Bds$" },
-    { code: "BDT", name: "Bangladeshi Taka", symbol: "৳" },
-    { code: "BGN", name: "Bulgarian Lev", symbol: "лв" },
-    { code: "BHD", name: "Bahraini Dinar", symbol: ".د.ب" },
-    { code: "BIF", name: "Burundian Franc", symbol: "FBu" },
-    { code: "BMD", name: "Bermudian Dollar", symbol: "$" },
-    { code: "BND", name: "Brunei Dollar", symbol: "B$" },
-    { code: "BOB", name: "Bolivian Boliviano", symbol: "Bs." },
-    { code: "BRL", name: "Brazilian Real", symbol: "R$" },
-    { code: "BSD", name: "Bahamian Dollar", symbol: "B$" },
-    { code: "BTN", name: "Bhutanese Ngultrum", symbol: "Nu." },
-    { code: "BWP", name: "Botswana Pula", symbol: "P" },
-    { code: "BYN", name: "Belarusian Ruble", symbol: "Br" },
-    { code: "BZD", name: "Belize Dollar", symbol: "BZ$" },
-    { code: "CAD", name: "Canadian Dollar", symbol: "C$" },
-    { code: "CDF", name: "Congolese Franc", symbol: "FC" },
-    { code: "CHF", name: "Swiss Franc", symbol: "CHF" },
-    { code: "CLP", name: "Chilean Peso", symbol: "$" },
-    { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
-    { code: "COP", name: "Colombian Peso", symbol: "$" },
-    { code: "CRC", name: "Costa Rican Colón", symbol: "₡" },
-    { code: "CUP", name: "Cuban Peso", symbol: "$" },
-    { code: "CVE", name: "Cape Verdean Escudo", symbol: "$" },
-    { code: "CZK", name: "Czech Koruna", symbol: "Kč" },
-    { code: "DJF", name: "Djiboutian Franc", symbol: "Fdj" },
-    { code: "DKK", name: "Danish Krone", symbol: "kr" },
-    { code: "DOP", name: "Dominican Peso", symbol: "RD$" },
-    { code: "DZD", name: "Algerian Dinar", symbol: "دج" },
-    { code: "EGP", name: "Egyptian Pound", symbol: "£" },
-    { code: "ERN", name: "Eritrean Nakfa", symbol: "Nfk" },
-    { code: "ETB", name: "Ethiopian Birr", symbol: "Br" },
-    { code: "EUR", name: "Euro", symbol: "€" },
-    { code: "FJD", name: "Fijian Dollar", symbol: "FJ$" },
-    { code: "FKP", name: "Falkland Islands Pound", symbol: "£" },
-    { code: "GBP", name: "British Pound Sterling", symbol: "£" },
-    { code: "GEL", name: "Georgian Lari", symbol: "₾" },
-    { code: "GHS", name: "Ghanaian Cedi", symbol: "₵" },
-    { code: "GIP", name: "Gibraltar Pound", symbol: "£" },
-    { code: "GMD", name: "Gambian Dalasi", symbol: "D" },
-    { code: "GNF", name: "Guinean Franc", symbol: "FG" },
-    { code: "GTQ", name: "Guatemalan Quetzal", symbol: "Q" },
-    { code: "GYD", name: "Guyanese Dollar", symbol: "GY$" },
-    { code: "HKD", name: "Hong Kong Dollar", symbol: "HK$" },
-    { code: "HNL", name: "Honduran Lempira", symbol: "L" },
-    { code: "HRK", name: "Croatian Kuna", symbol: "kn" },
-    { code: "HTG", name: "Haitian Gourde", symbol: "G" },
-    { code: "HUF", name: "Hungarian Forint", symbol: "Ft" },
-    { code: "IDR", name: "Indonesian Rupiah", symbol: "Rp" },
-    { code: "ILS", name: "Israeli New Shekel", symbol: "₪" },
-    { code: "INR", name: "Indian Rupee", symbol: "₹" },
-    { code: "IQD", name: "Iraqi Dinar", symbol: "ع.د" },
-    { code: "IRR", name: "Iranian Rial", symbol: "﷼" },
-    { code: "ISK", name: "Icelandic Króna", symbol: "kr" },
-    { code: "JMD", name: "Jamaican Dollar", symbol: "J$" },
-    { code: "JOD", name: "Jordanian Dinar", symbol: "JD" },
-    { code: "JPY", name: "Japanese Yen", symbol: "¥" },
-    { code: "KES", name: "Kenyan Shilling", symbol: "KSh" },
-    { code: "KGS", name: "Kyrgyzstani Som", symbol: "с" },
-    { code: "KHR", name: "Cambodian Riel", symbol: "៛" },
-    { code: "KMF", name: "Comorian Franc", symbol: "CF" },
-    { code: "KPW", name: "North Korean Won", symbol: "₩" },
-    { code: "KRW", name: "South Korean Won", symbol: "₩" },
-    { code: "KWD", name: "Kuwaiti Dinar", symbol: "KD" },
-    { code: "KYD", name: "Cayman Islands Dollar", symbol: "CI$" },
-    { code: "KZT", name: "Kazakhstani Tenge", symbol: "₸" },
-    { code: "LAK", name: "Lao Kip", symbol: "₭" },
-    { code: "LBP", name: "Lebanese Pound", symbol: "ل.ل" },
-    { code: "LKR", name: "Sri Lankan Rupee", symbol: "Rs" },
-    { code: "LRD", name: "Liberian Dollar", symbol: "L$" },
-    { code: "LSL", name: "Lesotho Loti", symbol: "L" },
-    { code: "LYD", name: "Libyan Dinar", symbol: "LD" },
-    { code: "MAD", name: "Moroccan Dirham", symbol: "DH" },
-    { code: "MDL", name: "Moldovan Leu", symbol: "L" },
-    { code: "MGA", name: "Malagasy Ariary", symbol: "Ar" },
-    { code: "MKD", name: "Macedonian Denar", symbol: "ден" },
-    { code: "MMK", name: "Burmese Kyat", symbol: "K" },
-    { code: "MNT", name: "Mongolian Tögrög", symbol: "₮" },
-    { code: "MOP", name: "Macanese Pataca", symbol: "MOP$" },
-    { code: "MRU", name: "Mauritanian Ouguiya", symbol: "UM" },
-    { code: "MUR", name: "Mauritian Rupee", symbol: "₨" },
-    { code: "MVR", name: "Maldivian Rufiyaa", symbol: "Rf" },
-    { code: "MWK", name: "Malawian Kwacha", symbol: "MK" },
-    { code: "MXN", name: "Mexican Peso", symbol: "$" },
-    { code: "MYR", name: "Malaysian Ringgit", symbol: "RM" },
-    { code: "MZN", name: "Mozambican Metical", symbol: "MT" },
-    { code: "NAD", name: "Namibian Dollar", symbol: "N$" },
-    { code: "NGN", name: "Nigerian Naira", symbol: "₦" },
-    { code: "NIO", name: "Nicaraguan Córdoba", symbol: "C$" },
-    { code: "NOK", name: "Norwegian Krone", symbol: "kr" },
-    { code: "NPR", name: "Nepalese Rupee", symbol: "₨" },
-    { code: "NZD", name: "New Zealand Dollar", symbol: "NZ$" },
-    { code: "OMR", name: "Omani Rial", symbol: "﷼" },
-    { code: "PAB", name: "Panamanian Balboa", symbol: "B/." },
-    { code: "PEN", name: "Peruvian Sol", symbol: "S/" },
-    { code: "PGK", name: "Papua New Guinean Kina", symbol: "K" },
-    { code: "PHP", name: "Philippine Peso", symbol: "₱" },
-    { code: "PKR", name: "Pakistani Rupee", symbol: "₨" },
-    { code: "PLN", name: "Polish Złoty", symbol: "zł" },
-    { code: "PYG", name: "Paraguayan Guaraní", symbol: "₲" },
-    { code: "QAR", name: "Qatari Rial", symbol: "﷼" },
-    { code: "RON", name: "Romanian Leu", symbol: "lei" },
-    { code: "RSD", name: "Serbian Dinar", symbol: "din" },
-    { code: "RUB", name: "Russian Ruble", symbol: "₽" },
-    { code: "RWF", name: "Rwandan Franc", symbol: "FRw" },
-    { code: "SAR", name: "Saudi Riyal", symbol: "﷼" },
-    { code: "SBD", name: "Solomon Islands Dollar", symbol: "SI$" },
-    { code: "SCR", name: "Seychellois Rupee", symbol: "₨" },
-    { code: "SDG", name: "Sudanese Pound", symbol: "ج.س" },
-    { code: "SEK", name: "Swedish Krona", symbol: "kr" },
-    { code: "SGD", name: "Singapore Dollar", symbol: "S$" },
-    { code: "SHP", name: "Saint Helena Pound", symbol: "£" },
-    { code: "SLL", name: "Sierra Leonean Leone", symbol: "Le" },
-    { code: "SOS", name: "Somali Shilling", symbol: "Sh.So." },
-    { code: "SRD", name: "Surinamese Dollar", symbol: "SRD$" },
-    { code: "SSP", name: "South Sudanese Pound", symbol: "£" },
-    { code: "STN", name: "São Tomé and Príncipe Dobra", symbol: "Db" },
-    { code: "SVC", name: "Salvadoran Colón", symbol: "₡" },
-    { code: "SYP", name: "Syrian Pound", symbol: "£S" },
-    { code: "SZL", name: "Swazi Lilangeni", symbol: "E" },
-    { code: "THB", name: "Thai Baht", symbol: "฿" },
-    { code: "TJS", name: "Tajikistani Somoni", symbol: "ЅM" },
-    { code: "TMT", name: "Turkmenistani Manat", symbol: "T" },
-    { code: "TND", name: "Tunisian Dinar", symbol: "DT" },
-    { code: "TOP", name: "Tongan Paʻanga", symbol: "T$" },
-    { code: "TRY", name: "Turkish Lira", symbol: "₺" },
-    { code: "TTD", name: "Trinidad and Tobago Dollar", symbol: "TT$" },
-    { code: "TWD", name: "New Taiwan Dollar", symbol: "NT$" },
-    { code: "TZS", name: "Tanzanian Shilling", symbol: "TSh" },
-    { code: "UAH", name: "Ukrainian Hryvnia", symbol: "₴" },
-    { code: "UGX", name: "Ugandan Shilling", symbol: "USh" },
-    { code: "USD", name: "United States Dollar", symbol: "$" },
-    { code: "UYU", name: "Uruguayan Peso", symbol: "$U" },
-    { code: "UZS", name: "Uzbekistani Som", symbol: "so'm" },
-    { code: "VES", name: "Venezuelan Bolívar", symbol: "Bs.S" },
-    { code: "VND", name: "Vietnamese Đồng", symbol: "₫" },
-    { code: "VUV", name: "Vanuatu Vatu", symbol: "VT" },
-    { code: "WST", name: "Samoan Tala", symbol: "WS$" },
-    { code: "XAF", name: "Central African CFA Franc", symbol: "FCFA" },
-    { code: "XCD", name: "East Caribbean Dollar", symbol: "EC$" },
-    { code: "XOF", name: "West African CFA Franc", symbol: "CFA" },
-    { code: "XPF", name: "CFP Franc", symbol: "₣" },
-    { code: "YER", name: "Yemeni Rial", symbol: "﷼" },
-    { code: "ZAR", name: "South African Rand", symbol: "R" },
-    { code: "ZMW", name: "Zambian Kwacha", symbol: "ZK" },
-    { code: "ZWL", name: "Zimbabwean Dollar", symbol: "Z$" },
-  ];
 
   //============== Initial, Add, Update, Delete ==============
   const handleTransaction = () => {
@@ -242,8 +78,8 @@ const BudgetDetail = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        reset();
         setSkCount(skCount - 1);
-        // reset();
         return;
       }
       Swal.fire({
@@ -343,16 +179,15 @@ const BudgetDetail = () => {
       },
     },
   };
-  // =========================================================
 
   return (
     <>
-      <div className="grid grid-cols-2">
-        <div className="flex flex-col justify-start items-start pr-8">
-          <h1 className="text-3xl font-extrabold text-green-500 mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 p-2 sm:p-4 md:p-8 min-h-[300px] bg-gradient-to-br from-[#23272f] via-[#334756] to-[#5C7AEA] rounded-2xl">
+        <div className="flex flex-col justify-start items-start pr-0 md:pr-8">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-green-500 mb-2">
             Money Management Matters
           </h1>
-          <p className="text-lg text-gray-200 mb-2 text-justify">
+          <p className="text-base sm:text-lg text-gray-200 mb-2 text-justify">
             Effective money management is the foundation of financial success.
             It allows you to take control of your finances instead of letting
             money control you. By carefully tracking your income and expenses,
@@ -363,59 +198,65 @@ const BudgetDetail = () => {
             consistently, invest wisely, and prepare for unexpected situations.
           </p>
         </div>
-        <div className="grid grid-cols-2  items-stretch">
-          <div className="flex flex-col mt-4 justify-center h-full gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 items-stretch gap-4">
+          <div className="flex flex-col mt-4 justify-center h-full gap-4">
             <div
-              className="py-3 px-6 bg-green-600 rounded-lg flex items-center justify-center shadow-md"
+              className="py-3 px-4 bg-gradient-to-r from-green-600 to-green-400 rounded-xl flex items-center justify-center shadow-md"
               title="Total Income"
             >
-              <h1 className="font-bold text-center text-white text-lg">
+              <h1 className="font-bold text-center text-white text-base sm:text-lg">
                 Total Incomes :
                 {transactionAmount && (
-                  <span className="ml-2">{transactionAmount.Income} ৳</span>
+                  <span className="ml-2">
+                    {transactionAmount.Income || 0} ৳
+                  </span>
                 )}
               </h1>
             </div>
             <div
-              className="py-3 px-6 bg-red-600 rounded-lg flex items-center justify-center shadow-md"
+              className="py-3 px-4 bg-gradient-to-r from-red-600 to-red-400 rounded-xl flex items-center justify-center shadow-md"
               title="Total Expense"
             >
-              <h1 className="font-bold text-center text-white text-lg">
+              <h1 className="font-bold text-center text-white text-base sm:text-lg">
                 Total Expenses :
                 {transactionAmount && (
-                  <span className="ml-2">{transactionAmount.Expense} ৳</span>
+                  <span className="ml-2">
+                    {transactionAmount.Expense || 0} ৳
+                  </span>
                 )}
               </h1>
             </div>
             <div
-              className="py-3 px-6 bg-blue-600 rounded-lg flex items-center justify-center shadow-md"
+              className="py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-md"
               title="Net Total"
             >
-              <h1 className="font-bold text-center text-white text-lg">
+              <h1 className="font-bold text-center text-white text-base sm:text-lg">
                 Total Amount :
                 {transactionAmount && (
                   <span className="ml-2">
-                    {transactionAmount.Income - transactionAmount.Expense} ৳
+                    {parseInt(transactionAmount.Income || 0) -
+                      parseInt(transactionAmount.Expense || 0)}
+                    ৳
                   </span>
                 )}
               </h1>
             </div>
           </div>
-          <div className="flex flex-col  justify-center items-center h-full">
+          <div className="flex flex-col justify-center items-center h-full">
             {transactionAmount && (
               <>
-                <h2 className="text-xl font-bold text-white mb-4 text-center">
+                <h2 className="text-lg sm:text-xl font-bold text-white mb-4 text-center">
                   Income vs Expense
                 </h2>
                 <div
-                  className="bg-[#23272f] rounded-2xl border-2 border-green-400 shadow-xl p-4 flex items-center justify-center"
-                  style={{ width: 220, height: 220 }}
+                  className="bg-[#23272f] rounded-2xl border-2 border-green-400 shadow-xl p-2 sm:p-4 flex items-center justify-center w-full"
+                  style={{ maxWidth: 220, height: "auto" }}
                 >
                   <Pie
                     data={pieData}
                     options={{ ...pieOptions, maintainAspectRatio: false }}
-                    width={180}
-                    height={180}
+                    width={160}
+                    height={160}
                   />
                 </div>
               </>
@@ -425,8 +266,8 @@ const BudgetDetail = () => {
       </div>
 
       <hr className="mt-2" />
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 mt-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* Select Income/Expense */}
           <select
             className="py-2 px-3 rounded-lg border border-gray-400 bg-[#23272f] text-white focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -439,19 +280,19 @@ const BudgetDetail = () => {
         </div>
         <div>
           <button
-            className="py-2 px-3 bg-green-500 rounded-lg my-4 hover:bg-[#2C394B] "
-            title="Add New Class"
+            className="py-2 px-3 bg-green-500 rounded-xl my-2 sm:my-4 hover:bg-green-600 shadow transition-colors"
+            title="Add New Transaction"
             onClick={handleTransaction}
           >
-            <MdLibraryAdd size={30} />
+            <MdLibraryAdd size={24} />
           </button>
         </div>
       </div>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed  inset-0 z-50 flex items-center justify-center sm:ml-64 mt-20 bg-opacity-50">
-          <div className="bg-[#23272F]  border-1 border-green-500 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 px-2">
+          <div className="bg-[#23272F] border border-green-500 p-4 sm:p-6 rounded-xl shadow-xl w-full max-w-md mx-2">
             <h2 className="text-xl font-bold mb-4 text-white">
               Add Transaction
             </h2>
@@ -484,30 +325,6 @@ const BudgetDetail = () => {
                   Expense
                 </option>
               </select>
-
-              {/* Currency */}
-              <select
-                {...register("currency")}
-                className="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white"
-              >
-                <option className="bg-[#23272f]" value="">
-                  Select Currency
-                </option>
-                {allCurrency.map((c) => (
-                  <option
-                    className="bg-[#23272f]"
-                    key={c.code}
-                    value={c.symbol}
-                  >
-                    {c.code} - {c.symbol}
-                  </option>
-                ))}
-              </select>
-              {errors.currency && (
-                <span className="text-red-400 text-sm">
-                  {errors.currency.message}
-                </span>
-              )}
 
               {/* Amount */}
               <input
@@ -566,77 +383,87 @@ const BudgetDetail = () => {
 
       {/* Show data in table */}
 
-      <table className="min-w-full bg-[#23272F] rounded-lg shadow-md ">
-        <thead>
-          <tr className="bg-green-500 rounded-tl-2xl">
-            <th className="py-2 px-4 text-white text-center">Title</th>
-            <th className="py-2 px-4 text-white text-center">Date</th>
-            <th className="py-2 px-4 text-white text-center">
-              Transaction Type
-            </th>
-            <th className="py-2 px-4 text-white text-center">Amount</th>
-            <th className="py-2 px-4 text-white text-center">Note</th>
-            <th className="py-2 px-4 text-white text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.length === 0 ? (
-            <tr>
-              <td colSpan={6} className="py-4 px-4 text-center text-gray-400">
-                No classes scheduled for this day.
-              </td>
+      <div className="overflow-x-auto mt-4">
+        <table className="min-w-full bg-[#23272F] rounded-xl shadow border border-gray-800 text-xs sm:text-sm">
+          <thead>
+            <tr className="bg-green-500 rounded-t-xl">
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Title
+              </th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">Date</th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">Type</th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Amount
+              </th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">Note</th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Actions
+              </th>
             </tr>
-          ) : (
-            transactions.map((tra) => (
-              <tr
-                key={tra._id}
-                className={`border-b border-gray-700 hover:bg-[#131920]`}
-              >
+          </thead>
+          <tbody>
+            {transactions.length === 0 ? (
+              <tr>
                 <td
-                  className={`${
-                    tra.type === "Income" ? "text-green-500" : "text-red-500"
-                  } py-2 px-4 font-bold text-center`}
+                  colSpan={6}
+                  className="py-4 px-4 text-center text-gray-400 text-xs"
                 >
-                  {tra.title}
-                </td>
-                <td className="py-2 px-4 text-center text-white">{tra.date}</td>
-                <td
-                  className={`py-2 px-4 text-center ${
-                    tra.type === "Income" ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {tra.type}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {`${tra.amount} ${tra.currency}`}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {tra.note || "N/A"}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {/* Example action buttons */}
-                  <div className="flex justify-center gap-5">
-                    <button
-                      onClick={() => handleUpdate(tra, tra._id)}
-                      className="px-2 py-1 bg-blue-600 rounded text-white mr-2 hover:bg-blue-500 text-xs"
-                      title="Edit Class"
-                    >
-                      <AiFillEdit size={20} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(tra._id)}
-                      className="px-2 py-1 bg-red-600 rounded text-white hover:bg-red-800 text-xs"
-                      title="Delete Class"
-                    >
-                      <MdDeleteSweep size={20} />
-                    </button>
-                  </div>
+                  No transactions found.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              transactions.map((tra) => (
+                <tr
+                  key={tra._id}
+                  className="border-b border-gray-800 hover:bg-[#181a20] transition-colors"
+                >
+                  <td
+                    className={`${
+                      tra.type === "Income" ? "text-green-500" : "text-red-500"
+                    } py-2 px-1 sm:px-4 font-bold text-center`}
+                  >
+                    {tra.title}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {tra.date}
+                  </td>
+                  <td
+                    className={`py-2 px-1 sm:px-4 text-center ${
+                      tra.type === "Income" ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {tra.type}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {tra.amount} ৳
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {tra.note || "N/A"}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-1 sm:gap-2 items-center">
+                      <button
+                        onClick={() => handleUpdate(tra, tra._id)}
+                        className="p-1 bg-blue-600 rounded hover:bg-blue-500 text-white"
+                        title="Edit Transaction"
+                      >
+                        <AiFillEdit size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(tra._id)}
+                        className="p-1 bg-red-600 rounded hover:bg-red-800 text-white"
+                        title="Delete Transaction"
+                      >
+                        <MdDeleteSweep size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };

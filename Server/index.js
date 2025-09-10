@@ -81,7 +81,6 @@ async function run() {
     // GET /qa-generator?subject=Math&type=MCQ&number=10
     app.get("/qa-generator", async (req, res) => {
       const { subject, type, difficulty, number } = req.query;
-      console.log(subject, type, difficulty, number);
       const result = await questionCollection
         .find({
           $and: [
@@ -98,7 +97,6 @@ async function run() {
       const newQuestions = [];
       for (let i = 0; i < number; i++) {
         const randomIndex = Math.floor(Math.random() * length);
-        // console.log(i, randomIndex, questionsArray[randomIndex]);
         newQuestions.push(questionsArray[randomIndex]);
       }
       res.json({ success: true, newQuestions });

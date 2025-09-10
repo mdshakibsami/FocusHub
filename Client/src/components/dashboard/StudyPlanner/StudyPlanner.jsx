@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { api } from "../../../utils/api";
-import useAuth from "../../../hooks/useAuth";
 import { useEffect } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoAddCircleSharp } from "react-icons/io5";
@@ -10,7 +9,6 @@ import { MdDeleteOutline } from "react-icons/md";
 import { ImFilesEmpty } from "react-icons/im";
 
 export default function StudyPlanner() {
-  const { user } = useAuth();
   const [subjects, setSubjects] = useState([]);
   const [progressBarCount, setProgressBarCount] = useState([]);
   const [actionMenu, setActionMenu] = useState({
@@ -74,7 +72,7 @@ export default function StudyPlanner() {
       });
     }
     setShowSubjectModal(false);
-    const subjectData = { email: user.email, subject, task: [] };
+    const subjectData = { subject, task: [] };
     const result = await api.post("/add-subject", subjectData);
 
     if (result.data.insertedId) {
@@ -218,7 +216,6 @@ export default function StudyPlanner() {
   const handleDeleteTask = async (tableRowIndex, subjectIndex) => {
     const deletedSubject = subjects[subjectIndex].subject;
     const deletedIndex = tableRowIndex;
-    console.log(deletedIndex);
     const result = await api.delete(
       `/delete-subtask/${deletedSubject}/${deletedIndex}`
     );
@@ -249,10 +246,10 @@ export default function StudyPlanner() {
   };
 
   return (
-    <div className="px-6 bg-gray-900 min-h-screen text-white">
-      <div className="py-6">
-        <h2 className="text-2xl font-bold text-center">Study Planner</h2>
-      </div>
+    <div className="px-6 py-10 bg-gray-900 min-h-screen text-white">
+      <h1 className="text-4xl font-extrabold text-white text-center mb-6 drop-shadow-lg tracking-wide">
+        Study Planner
+      </h1>
 
       {/* Add Subject Button */}
       <div className="flex mb-5 justify-between items-center">

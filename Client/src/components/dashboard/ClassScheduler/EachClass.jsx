@@ -62,7 +62,6 @@ const EachClass = () => {
       setClasses(newClass);
     })();
   }, [selectedDay, showModal]);
-  console.log(classes);
 
   const onSubmit = async (data) => {
     data.day = selectedDay;

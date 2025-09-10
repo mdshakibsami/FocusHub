@@ -12,9 +12,9 @@ const ClassOverview = () => {
     (async () => {
       const resultClasses = await api.get("/all-day-count");
       const resultCompleted = await api.get("/completed");
-      console.log(resultClasses.data);
+     
       setDayCount(resultClasses.data);
-      console.log(resultCompleted.data);
+      
       setCompleted(resultCompleted.data);
     })();
   }, []);
@@ -34,7 +34,6 @@ const ClassOverview = () => {
     return { _id: day, count: found ? found.count : 0 };
   });
 
-  console.log(allCounts);
 
   // Pie chart data and options
   const pieData = {

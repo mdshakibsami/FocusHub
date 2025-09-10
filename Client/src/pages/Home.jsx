@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../components/navbar/Navbar";
 import { FiHome, FiUser, FiSettings, FiMenu, FiX } from "react-icons/fi";
 import { FaChalkboardTeacher, FaMoneyCheckAlt } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router";

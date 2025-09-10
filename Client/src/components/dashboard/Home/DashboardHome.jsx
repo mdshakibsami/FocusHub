@@ -59,7 +59,7 @@ const DashboardHome = () => {
     <div className="min-h-screen bg-[#181a20] py-10 px-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-extrabold text-white text-center mb-6 drop-shadow-lg tracking-wide">
-          FocusHub Dashboard
+          FocusHub
         </h1>
         <p className="text-lg text-gray-300 text-center mb-10">
           Welcome! Choose a feature below to get started.
