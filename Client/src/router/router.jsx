@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                Component: ClassOverview,
+                Component: EachClass,
               },
               {
                 path: "overview",
@@ -93,14 +93,6 @@ export const router = createBrowserRouter([
             ],
           },
         ],
-      },
-      {
-        path: "login",
-        Component: Login,
-      },
-      {
-        path: "register",
-        Component: Register,
       },
     ],
   },

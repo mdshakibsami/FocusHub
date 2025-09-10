@@ -61,6 +61,22 @@ async function run() {
       res.send(flashcard);
     });
 
+    app.delete("/flashcard/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await flashcardCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      res.send(result);
+    });
+    app.patch("/flashcard/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await flashcardCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { completed: true } }
+      );
+      res.send(result);
+    });
+
     // ====================== Q&A Generator  ==========================
     // GET /qa-generator?subject=Math&type=MCQ&number=10
     app.get("/qa-generator", async (req, res) => {

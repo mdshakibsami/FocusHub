@@ -6,15 +6,15 @@ import { NavLink, Outlet } from "react-router";
 import { FcPlanner } from "react-icons/fc";
 import { SiAnswer } from "react-icons/si";
 import { PiNotebookFill } from "react-icons/pi";
+import { IoHome } from "react-icons/io5";
 
 const Home = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#1d232a] text-white">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex flex-1">
-        {/* Sidebar Drawer */}
         {/* Hamburger button for mobile */}
         <button
           className="fixed top-4 left-4 z-40 md:hidden p-2 rounded-lg bg-[#2C394B] text-white shadow-lg"
@@ -46,6 +46,19 @@ const Home = () => {
 
           <nav className="flex-1 py-6">
             <ul className="space-y-2">
+              <li>
+                <NavLink
+                  to={"/"}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-6 py-3 rounded-lg transition-colors hover:bg-[#2C394B]${
+                      isActive ? " bg-[#e64524]" : ""
+                    }`
+                  }
+                >
+                  <IoHome className="text-xl" />
+                  Home
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to={"/class-scheduler"}

@@ -204,16 +204,16 @@ const EachClass = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-4 mx-auto">
+      <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-1 sm:gap-4 mx-auto py-2">
         {daysOfWeek.map((day) => (
           <NavLink
             key={day}
             to={`/class-scheduler/${day.toLowerCase()}`}
             className={({ isActive }) =>
-              `block px-4 py-2 rounded-lg text-center font-semibold transition-colors shadow-md ${
+              `block px-2 sm:px-4 py-2 rounded-md text-center font-medium transition-colors border border-transparent ${
                 isActive
-                  ? "bg-[#e64524] text-white"
-                  : "bg-[#23272F] text-white hover:bg-[#2C394B]"
+                  ? "bg-[#e64524] text-white border-[#e64524] shadow"
+                  : "bg-[#23272F] text-white hover:bg-[#2C394B] border-[#23272F]"
               }`
             }
           >
@@ -221,33 +221,35 @@ const EachClass = () => {
           </NavLink>
         ))}
       </div>
-      <div className="flex justify-end ">
+      <div className="flex justify-end py-2">
         <button
-          className="py-2 px-3 bg-green-500 rounded-lg my-4 hover:bg-[#2C394B] "
+          className="p-2 bg-green-500 rounded-md shadow hover:bg-green-600 transition-colors"
           title="Add New Class"
           onClick={handleAddClass}
         >
-          <MdLibraryAdd size={30} />
+          <MdLibraryAdd size={22} />
         </button>
       </div>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center sm:ml-64 mt-40 bg-opacity-50">
-          <div className="bg-[#23272F] border-1 border-green-500 p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4 text-white">Add New Class</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 px-2">
+          <div className="bg-[#23272F] border border-green-500 p-3 sm:p-6 rounded-xl shadow-xl w-full max-w-md mx-2">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-white">
+              {selectedClass ? "Edit Class" : "Add New Class"}
+            </h2>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-3"
             >
               <input
                 type="text"
                 {...register("subject")}
                 placeholder="Subject"
-                className="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white"
+                className="px-3 py-2 rounded-md border border-gray-700 bg-[#181a20] focus:outline-none focus:ring-2 focus:ring-green-500 text-white"
               />
               {errors.subject && (
-                <span className="text-red-400 text-sm">
+                <span className="text-red-400 text-xs">
                   {errors.subject.message}
                 </span>
               )}
@@ -255,10 +257,10 @@ const EachClass = () => {
                 type="text"
                 {...register("instructor")}
                 placeholder="Instructor"
-                className="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white"
+                className="px-3 py-2 rounded-md border border-gray-700 bg-[#181a20] focus:outline-none focus:ring-2 focus:ring-green-500 text-white"
               />
               {errors.instructor && (
-                <span className="text-red-400 text-sm">
+                <span className="text-red-400 text-xs">
                   {errors.instructor.message}
                 </span>
               )}
@@ -266,47 +268,47 @@ const EachClass = () => {
                 <input
                   type="time"
                   {...register("startTime")}
-                  className="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white w-1/2"
+                  className="px-3 py-2 rounded-md border border-gray-700 bg-[#181a20] focus:outline-none focus:ring-2 focus:ring-green-500 text-white w-1/2"
                 />
                 <input
                   type="time"
                   {...register("endTime")}
-                  className="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white w-1/2"
+                  className="px-3 py-2 rounded-md border border-gray-700 bg-[#181a20] focus:outline-none focus:ring-2 focus:ring-green-500 text-white w-1/2"
                 />
               </div>
               {(errors.startTime || errors.endTime) && (
-                <span className="text-red-400 text-sm">
+                <span className="text-red-400 text-xs">
                   {errors.startTime?.message || errors.endTime?.message}
                 </span>
               )}
               <div className="flex items-center gap-2">
-                <label className="text-white">Color:</label>
+                <label className="text-white text-sm">Color:</label>
                 <input
                   type="color"
                   {...register("color")}
                   defaultValue="#fff"
-                  className="w-10 h-10 p-0 border-none"
+                  className="w-8 h-8 p-0 border-none"
                 />
               </div>
               <textarea
                 {...register("notes")}
                 placeholder="Notes"
-                className="px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white resize-none"
-                rows={3}
+                className="px-3 py-2 rounded-md border border-gray-700 bg-[#181a20] focus:outline-none focus:ring-2 focus:ring-green-500 text-white resize-none"
+                rows={2}
               />
-              <div className="flex gap-2 justify-end">
+              <div className="flex gap-2 justify-end mt-2">
                 <button
                   type="button"
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
+                  className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-700 text-xs"
                   onClick={() => setShowModal(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#FF4C29] text-white rounded-lg font-semibold hover:bg-[#e64524] transition-colors"
+                  className="px-3 py-1 bg-[#FF4C29] text-white rounded-md font-semibold hover:bg-[#e64524] transition-colors text-xs"
                 >
-                  Add
+                  {selectedClass ? "Update" : "Add"}
                 </button>
               </div>
             </form>
@@ -315,90 +317,103 @@ const EachClass = () => {
       )}
 
       {/* Show data in table */}
-      <table className="min-w-full bg-[#23272F] rounded-lg shadow-md ">
-        <thead>
-          <tr className="bg-green-500 rounded-tl-2xl">
-            <th className="py-2 px-4 text-white text-center">Subject</th>
-            <th className="py-2 px-4 text-white text-center">Instructor</th>
-            <th className="py-2 px-4 text-white text-center">Start Time</th>
-            <th className="py-2 px-4 text-white text-center">End Time</th>
-            <th className="py-2 px-4 text-white text-center">Notes</th>
-            <th className="py-2 px-4 text-white text-center">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {classes.length === 0 ? (
-            <tr>
-              <td colSpan={6} className="py-4 px-4 text-center text-gray-400">
-                No classes scheduled for this day.
-              </td>
+      <div className="overflow-x-auto mt-4">
+        <table className="min-w-full bg-[#23272F] rounded-xl shadow border border-gray-800 text-xs sm:text-sm">
+          <thead>
+            <tr className="bg-green-500 rounded-t-xl">
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Subject
+              </th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Instructor
+              </th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Start
+              </th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">End</th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Notes
+              </th>
+              <th className="py-2 px-1 sm:px-4 text-white text-center">
+                Action
+              </th>
             </tr>
-          ) : (
-            classes.map((cls) => (
-              <tr key={cls._id} className={`border-b border-gray-700 hover:bg-[#131920]`}>
+          </thead>
+          <tbody>
+            {classes.length === 0 ? (
+              <tr>
                 <td
-                  style={{ color: cls.color }}
-                  className="py-2 px-4 font-bold text-center text-white"
+                  colSpan={6}
+                  className="py-4 px-4 text-center text-gray-400 text-xs"
                 >
-                  {cls.subject}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {cls.instructor}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {cls.startTime}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {cls.endTime}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {cls.notes || "-"}
-                </td>
-                <td className="py-2 px-4 text-center text-white">
-                  {/* Example action buttons */}
-                  <div className="flex justify-center gap-5">
-                    <button
-                      onClick={() => handleUpdate(cls, cls._id)}
-                      className="px-2 py-1 bg-blue-600 rounded text-white mr-2 hover:bg-blue-500 text-xs"
-                      title="Edit Class"
-                    >
-                      <AiFillEdit size={20} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cls._id)}
-                      className="px-2 py-1 bg-red-600 rounded text-white hover:bg-red-800 text-xs"
-                      title="Delete Class"
-                    >
-                      <MdDeleteSweep size={20} />
-                    </button>
-                    {cls.status ? (
-                      <>
-                        <button
-                          onClick={() => handleIncomplete(cls._id)}
-                          className="px-2 py-1 bg-green-600 rounded text-white hover:bg-green-800 text-xs"
-                          title="Mark as incomplete"
-                        >
-                          <FaRegCheckSquare size={20} />
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => handleComplete(cls._id)}
-                          className="px-2 py-1 bg-green-600 rounded text-white hover:bg-green-800 text-xs"
-                          title="Mark as Complete"
-                        >
-                          <MdCheckBoxOutlineBlank size={20} />
-                        </button>
-                      </>
-                    )}
-                  </div>
+                  No classes scheduled for this day.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              classes.map((cls) => (
+                <tr
+                  key={cls._id}
+                  className="border-b border-gray-800 hover:bg-[#181a20] transition-colors"
+                >
+                  <td
+                    style={{ color: cls.color }}
+                    className="py-2 px-1 sm:px-4 font-semibold text-center text-white"
+                  >
+                    {cls.subject}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {cls.instructor}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {cls.startTime}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {cls.endTime}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    {cls.notes || "-"}
+                  </td>
+                  <td className="py-2 px-1 sm:px-4 text-center text-white">
+                    <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-1 sm:gap-2 items-center">
+                      <button
+                        onClick={() => handleUpdate(cls, cls._id)}
+                        className="p-1 bg-blue-600 rounded hover:bg-blue-500 text-white"
+                        title="Edit Class"
+                      >
+                        <AiFillEdit size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(cls._id)}
+                        className="p-1 bg-red-600 rounded hover:bg-red-800 text-white"
+                        title="Delete Class"
+                      >
+                        <MdDeleteSweep size={16} />
+                      </button>
+                      {cls.status ? (
+                        <button
+                          onClick={() => handleIncomplete(cls._id)}
+                          className="p-1 bg-green-600 rounded hover:bg-green-800 text-white"
+                          title="Mark as incomplete"
+                        >
+                          <FaRegCheckSquare size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleComplete(cls._id)}
+                          className="p-1 bg-green-600 rounded hover:bg-green-800 text-white"
+                          title="Mark as Complete"
+                        >
+                          <MdCheckBoxOutlineBlank size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
